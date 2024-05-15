@@ -21,8 +21,8 @@ export default {
 </script>
 
 <style>
-  @import '../src/assets/base.css';
-  @import '../src/assets/main.css';
+  /* @import '../src/assets/base.css';
+  @import '../src/assets/main.css'; */
 </style>
 
 

@@ -59,8 +59,21 @@ function unitFromCall(callID) {
 
 // -------------------- Route Definitions --------------------
 
-// Get Calls
+// Get Calls Aggregate
 router.get('/', async (req, res) => {
+    db.all(`SELECT calls.name, phone, bib, location, complaint, open_time, close_time, COALESCE(units.name, 'None') AS unit, calls.status, notes FROM calls LEFT JOIN units ON calls.unit = units.unitID;`, (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Internal server error');
+        } else {
+            console.log(rows);
+            res.status(200).send(rows);
+        }
+    });
+});
+
+// Get Calls Table
+router.get('/calls', async (req, res) => {
     db.all('SELECT * FROM calls', (err, rows) => {
         if (err) {
             console.error(err.message);
@@ -110,7 +123,7 @@ router.post('/', async (req, res) => {
             }
             else {
                 // Create auto-generated data before adding to DB
-                open_time = new Date();
+                open_time = new Date().toLocaleString();
                 close_time = "";
                 unit = "";
                 status = "Unassigned";
@@ -221,7 +234,7 @@ router.put('/close', async (req, res) => {
                 .then(exists => {
                     if (exists) {
                         // Generate Data
-                        var close_time = new Date();
+                        var close_time = new Date().toLocaleString();
 
                         const sql = 'UPDATE calls SET close_time = ?, status = "Closed" WHERE callID = ?';
                         db.run(sql, [close_time, callID], function (err) {
