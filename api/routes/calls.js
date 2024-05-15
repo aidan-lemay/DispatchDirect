@@ -89,8 +89,6 @@ router.post('/', async (req, res) => {
         if (req.body) {
             var { name, phone, bib, location, complaint, notes } = req.body;
 
-            console.log(name, phone, bib, location, complaint, notes);
-
             // Ensure each field is defined before converting to string and checking length
             if (name !== undefined && name.length < 1) {
                 res.status(400).send({ 'error': 'Name Invalid' });

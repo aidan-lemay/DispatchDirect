@@ -43,8 +43,15 @@ router.post('/', async (req, res) => {
         if (req.body) {
             var { name, contact } = req.body;
 
-            name = name.toString();
-            contact = contact.toString();
+            // Ensure each field is defined before converting to string and checking length
+            if (name !== undefined && name.length < 1) {
+                res.status(400).send({ 'error': 'Unit Identifier Invalid' });
+                return;
+            }
+            if (contact !== undefined && contact.length < 1) {
+                res.status(400).send({ 'error': 'Contact Number Invalid' });
+                return;
+            }
 
             checkUnique(name, contact)
                 .then(isUnique => {

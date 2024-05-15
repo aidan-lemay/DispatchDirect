@@ -75,8 +75,6 @@ export default {
                 notes: this.notes.trim()
             };
 
-            console.log(formData);
-
             fetch('http://localhost:3000/api/calls', {
                 method: 'POST',
                 headers: {
