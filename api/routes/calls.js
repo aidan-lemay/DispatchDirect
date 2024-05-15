@@ -13,7 +13,7 @@ function checkUnitStatus(unitID) {
                 console.error(err.message);
                 reject(err);
             } else {
-                if (rows[0]['status'] == "Unassigned") {
+                if (rows[0]['status'] == "Free") {
                     resolve(true);
                 } else if (rows[0]['status'] == "Busy") {
                     resolve(false);
@@ -51,7 +51,14 @@ function unitFromCall(callID) {
                 console.error(err.message);
                 reject(err);
             } else {
-                resolve(rows[0]['unit']);
+                const unit = rows[0]['unit'];
+
+                if (unit == undefined) {
+                    resolve(0);
+                }
+                else {
+                    resolve(unit);
+                }
             }
         });
     });
@@ -161,28 +168,73 @@ router.put('/unit', async (req, res) => {
                                     res.end();
                                 }
                                 else {
-                                    // Set Unit To Busy
-                                    const sql = 'UPDATE units SET status = "Busy" WHERE unitID = ?';
-                                    db.run(sql, [unitID], function (err) {
-                                        if (err) {
-                                            console.error(err.message);
-                                            res.status(500).send('Internal server error');
-                                            res.end();
-                                        } else {
-                                            const sql = 'UPDATE calls SET unit = ?, status = "In-Progress" WHERE callID = ?';
-                                            db.run(sql, [unitID, callID], function (err) {
-                                                if (err) {
-                                                    console.error(err.message);
-                                                    res.status(500).send('Internal server error');
-                                                    res.end();
-                                                } else {
-                                                    const callID = this.lastID;
-                                                    res.status(201).send({ callID });
-                                                    res.end();
-                                                }
-                                            });
-                                        }
-                                    });
+                                    // Check if a unit is already assigned to that call
+                                    unitFromCall(callID)
+                                        .then(exUnitID => {
+                                            if (exUnitID && exUnitID != 0) {
+                                                // Set Old Unit To Free
+                                                const sql1 = 'UPDATE units SET status = "Free" WHERE unitID = ?';
+                                                db.run(sql1, [exUnitID], function (err) {
+                                                    if (err) {
+                                                        console.error(err.message);
+                                                        res.status(500).send('Internal server error');
+                                                        res.end();
+                                                    } else {
+                                                        // Set new Unit to Busy
+                                                        const sql2 = 'UPDATE units SET status = "Busy" WHERE unitID = ?';
+                                                        db.run(sql2, [unitID], function (err) {
+                                                            if (err) {
+                                                                console.error(err.message);
+                                                                res.status(500).send('Internal server error');
+                                                                res.end();
+                                                            } else {
+                                                                // Assign New Unit ID to Call
+                                                                const sql = 'UPDATE calls SET unit = ?, status = "In-Progress" WHERE callID = ?';
+                                                                db.run(sql, [unitID, callID], function (err) {
+                                                                    if (err) {
+                                                                        console.error(err.message);
+                                                                        res.status(500).send('Internal server error');
+                                                                        res.end();
+                                                                    } else {
+                                                                        const callID = this.lastID;
+                                                                        res.status(201).send({ callID });
+                                                                        res.end();
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                            else {
+                                                // Set Unit to Busy
+                                                const sql2 = 'UPDATE units SET status = "Busy" WHERE unitID = ?';
+                                                db.run(sql2, [unitID], function (err) {
+                                                    if (err) {
+                                                        console.error(err.message);
+                                                        res.status(500).send('Internal server error');
+                                                        res.end();
+                                                    } else {
+                                                        const sql = 'UPDATE calls SET unit = ?, status = "In-Progress" WHERE callID = ?';
+                                                        db.run(sql, [unitID, callID], function (err) {
+                                                            if (err) {
+                                                                console.error(err.message);
+                                                                res.status(500).send('Internal server error');
+                                                                res.end();
+                                                            } else {
+                                                                const callID = this.lastID;
+                                                                res.status(201).send({ callID });
+                                                                res.end();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        })
+                                        .catch(err => {
+                                            // Handle error
+                                            console.error("Error:", err);
+                                        });
                                 }
                             })
                             .catch(err => {

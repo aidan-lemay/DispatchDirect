@@ -7,7 +7,7 @@ const db = new sqlite3.Database('./db/dispatch.db', (err) => {
   console.log('Connected to database "dispatch".');
   
   // DELETE IN PROD
-  cleanDB();
+  // cleanDB();
   // DELETE IN PROD
 
   createUnits();

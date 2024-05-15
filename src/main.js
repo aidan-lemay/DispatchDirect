@@ -14,7 +14,9 @@ const router = createRouter({
     ]
 });
 
-const app= createApp(App)
+document.title = 'DispatchDirect'
+
+const app = createApp(App)
 
 app.use(router)
 

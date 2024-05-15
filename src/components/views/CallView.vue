@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="content">
         <h1>Calls</h1>
 
         <div class="callForm">
@@ -21,7 +21,7 @@
             <label for="notes">Notes</label>
             <textarea v-model="notes" placeholder="Notes"></textarea>
 
-            <button @click="submit">Submit</button>
+            <button @click="submit" class="submit">Submit</button>
         </div>
 
     </div>
@@ -30,18 +30,67 @@
 <style scoped>
 label {
     padding: 5px;
+    font-size: 20px;
 }
 
 button {
     padding: 5px;
+    margin: 10px;
+}
+
+.content {
+  width: 100%;
+  display: grid;
+  justify-content: center;
+  border: 1px solid black;
+  padding: 10px;
+  margin: 20px;
+  text-align: center;
 }
 
 input {
-    width: 500px;
+    width: 200px;
+    margin: 10px;
+
+    border: 2px solid black;
+    background-color: white;
+    color: black;
+    padding: 10px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+textarea {
+    width: 200px;
+    margin: 10px;
+
+    border: 2px solid black;
+    background-color: white;
+    color: black;
+    padding: 10px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  border-color: #04AA6D;
+  color: green;
+}
+.submit:hover {
+  background-color: #04AA6D;
+  color: white;
 }
 
 .callForm {
-    display: grid;
+  display: grid;
+  width: auto;
+  justify-content: center;
 }
 </style>
 
