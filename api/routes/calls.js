@@ -61,12 +61,11 @@ function unitFromCall(callID) {
 
 // Get Calls Aggregate
 router.get('/', async (req, res) => {
-    db.all(`SELECT calls.name, phone, bib, location, complaint, open_time, close_time, COALESCE(units.name, 'None') AS unit, calls.status, notes FROM calls LEFT JOIN units ON calls.unit = units.unitID;`, (err, rows) => {
+    db.all(`SELECT calls.callID, calls.name, phone, bib, location, complaint, open_time, close_time, calls.unit, COALESCE(units.name, 'None') AS unitName, calls.status, notes FROM calls LEFT JOIN units ON calls.unit = units.unitID;`, (err, rows) => {
         if (err) {
             console.error(err.message);
             res.status(500).send('Internal server error');
         } else {
-            console.log(rows);
             res.status(200).send(rows);
         }
     });
@@ -88,69 +87,61 @@ router.get('/calls', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         if (req.body) {
-            var { name, phone, bib, location, complaint, open_time, status, notes } = req.body;
+            var { name, phone, bib, location, complaint, notes } = req.body;
 
-            name = name.toString();
-            phone = phone.toString();
-            bib = bib.toString();
-            location = location.toString();
-            complaint = complaint.toString();
-            notes = notes.toString();
+            console.log(name, phone, bib, location, complaint, notes);
 
-            // Validate input before adding to DB - name, phone, bib, location, complaint, and notes are all user-generated.
-            if (name.length < 1) {
+            // Ensure each field is defined before converting to string and checking length
+            if (name !== undefined && name.length < 1) {
                 res.status(400).send({ 'error': 'Name Invalid' });
-                res.end();
+                return;
             }
-            else if (phone.length < 1) {
+            if (phone !== undefined && phone.length < 1) {
                 res.status(400).send({ 'error': 'Phone Number Invalid' });
-                res.end();
+                return;
             }
-            else if (bib.length < 1) {
+            if (phone !== undefined && phone.length > 10) {
+                res.status(400).send({ 'error': 'Phone Number must not exceed 10 digits' });
+                return;
+            }
+            if (bib !== undefined && bib.length < 1) {
                 res.status(400).send({ 'error': 'Bib Number Invalid' });
-                res.end();
+                return;
             }
-            else if (location.length < 1) {
+            if (location !== undefined && location.length < 1) {
                 res.status(400).send({ 'error': 'Location Invalid' });
-                res.end();
+                return;
             }
-            else if (complaint.length < 1) {
+            if (complaint !== undefined && complaint.length < 1) {
                 res.status(400).send({ 'error': 'Complaint Invalid' });
-                res.end();
+                return;
             }
-            else if (notes.length < 1) {
+            if (notes !== undefined && notes.length < 1) {
                 notes = "";
             }
-            else {
-                // Create auto-generated data before adding to DB
-                open_time = new Date().toLocaleString();
-                close_time = "";
-                unit = "";
-                status = "Unassigned";
 
-                const sql = 'INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                db.run(sql, [name, phone, bib, location, complaint, open_time, close_time, unit, status, notes], function (err) {
-                    if (err) {
-                        console.error(err.message);
-                        res.status(500).send('Internal server error');
-                        res.end();
-                    } else {
-                        const callID = this.lastID;
-                        res.status(201).send({ callID });
-                        res.end();
-                    }
-                });
-            }
-        }
-        else {
+            // Create auto-generated data before adding to DB
+            const open_time = new Date().toLocaleString();
+            const close_time = "";
+            const unit = "";
+            const status = "Unassigned";
+
+            const sql = 'INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            db.run(sql, [name, phone, bib, location, complaint, open_time, close_time, unit, status, notes], function (err) {
+                if (err) {
+                    console.error(err.message);
+                    res.status(500).send('Internal server error');
+                } else {
+                    const callID = this.lastID;
+                    res.status(201).send({ callID });
+                }
+            });
+        } else {
             res.status(400).send({ 'error': 'Missing Data' });
-            res.end();
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
-        res.status(500).send({ 'error': error });
-        res.end();
+        res.status(500).send({ 'error': error.message });
     }
 });
 

@@ -49,11 +49,11 @@ function createCalls() {
     db.exec(`
       CREATE TABLE IF NOT EXISTS calls (
         callID INTEGER PRIMARY KEY AUTOINCREMENT,
-        name VARCHAR(50) NOT NULL,
-        phone VARCHAR(50) NOT NULL,
-        bib INTEGER NOT NULL,
-        location VARCHAR(100) NOT NULL,
-        complaint VARCHAR(100) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        phone VARCHAR(10) NOT NULL,
+        bib VARCHAR(10) NOT NULL,
+        location VARCHAR(200) NOT NULL,
+        complaint VARCHAR(500) NOT NULL,
         open_time TIMESTAMP NOT NULL,
         close_time TIMESTAMP,
         unit INTEGER,

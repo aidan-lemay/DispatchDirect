@@ -1,7 +1,7 @@
 <template>
   <div>
-    <button @click="navigateCalls" class="navButtons">Calls</button>
-    <button @click="navigateUnit" class="navButtons">Units</button>
+    <button @click="navigateCalls" class="navButtons">Call Form</button>
+    <button @click="navigateDispatch" class="navButtons">Dispatch</button>
   </div>
   <router-view></router-view>
 </template>
@@ -10,8 +10,8 @@
 export default {
   name: 'UnitComponent',
   methods:{
-    navigateUnit(){
-      this.$router.push("/units");
+    navigateDispatch(){
+      this.$router.push("/dispatch");
     },
     navigateCalls(){
         this.$router.push("/calls");
