@@ -11,6 +11,6 @@ const units = require('./routes/units.js');
 app.use('/api/calls', calls);
 app.use('/api/units', units);
 
-app.listen(3007, () => {
+app.listen(3007, '0.0.0.0', () => {
     console.info("App listening on Port 3007");
 });

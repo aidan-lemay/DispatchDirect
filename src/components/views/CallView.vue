@@ -108,6 +108,8 @@ export default {
     },
     methods: {
         submit() {
+            const url = 'https://dispatchapi.k5doc.tech/';
+
             // Validation
             const validationError = this.validateForm();
             if (validationError) {
@@ -124,7 +126,7 @@ export default {
                 notes: this.notes.trim()
             };
 
-            fetch('http://localhost:3007/api/calls', {
+            fetch(url + 'api/calls', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
