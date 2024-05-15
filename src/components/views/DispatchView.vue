@@ -271,7 +271,7 @@ const POLLING_INTERVAL = 5000; // 5 seconds
 
 // Function to fetch units from the API
 const getUnits = () => {
-  fetch('http://localhost:3000/api/units', {
+  fetch('http://localhost:3007/api/units', {
     headers: { 'Content-type': 'application/json' },
   })
     .then(res => res.json())
@@ -285,7 +285,7 @@ const getUnits = () => {
 
 // Function to fetch calls from the API
 const getCalls = () => {
-  fetch('http://localhost:3000/api/calls', {
+  fetch('http://localhost:3007/api/calls', {
     headers: { 'Content-type': 'application/json' },
   })
     .then(res => res.json())
@@ -300,7 +300,7 @@ const getCalls = () => {
 // Function to update the assigned unit for a call
 const updateAssignedUnit = (callID, unitID) => {
   // Make API call to update the assigned unit for the call
-  fetch(`http://localhost:3000/api/calls/unit`, {
+  fetch(`http://localhost:3007/api/calls/unit`, {
     method: 'PUT',
     headers: { 'Content-type': 'application/json' },
     body: JSON.stringify({ callID: callID, unitID: unitID })
@@ -330,7 +330,7 @@ const closeCall = (callID, status) => {
   }
 
   // Make API call to close the call
-  fetch(`http://localhost:3000/api/calls/close`, {
+  fetch(`http://localhost:3007/api/calls/close`, {
     method: 'PUT',
     headers: { 'Content-type': 'application/json' },
     body: JSON.stringify({ callID: callID })
@@ -354,7 +354,7 @@ const closeCall = (callID, status) => {
 // Function to change unit status
 const setStatus = (unitID, status) => {
   if (status === 'OOS') {
-    fetch(`http://localhost:3000/api/units/BIS`, {
+    fetch(`http://localhost:3007/api/units/BIS`, {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ unitID: unitID })
@@ -376,7 +376,7 @@ const setStatus = (unitID, status) => {
   }
   // If unit status is NOT OOS
   else {
-    fetch(`http://localhost:3000/api/units/OOS`, {
+    fetch(`http://localhost:3007/api/units/OOS`, {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ unitID: unitID })
@@ -411,7 +411,7 @@ const submit = (name, number) => {
     contact: number.replace(/\D/g, ''),
   };
 
-  fetch('http://localhost:3000/api/units', {
+  fetch('http://localhost:3007/api/units', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
