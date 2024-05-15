@@ -124,7 +124,7 @@ export default {
                 notes: this.notes.trim()
             };
 
-            fetch('http://localhost:3000/api/calls', {
+            fetch('http://localhost:3007/api/calls', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
