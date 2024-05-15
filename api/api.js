@@ -10,5 +10,5 @@ app.use('/api/calls', calls);
 app.use('/api/units', units);
 
 app.listen(3000, () => {
-    console.info("App listening");
+    console.info("App listening on Port 3000");
 });

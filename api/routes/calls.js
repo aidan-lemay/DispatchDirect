@@ -6,12 +6,12 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     db.all('SELECT * FROM calls', (err, rows) => {
         if (err) {
-          console.error(err.message);
-          res.status(500).send('Internal server error');
+            console.error(err.message);
+            res.status(500).send('Internal server error');
         } else {
-          res.send(rows);
+            res.status(200).send(rows);
         }
-      });
+    });
 });
 
 // Get Call By Run Number
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         if (req.body) {
-            var { name, phone, bib, location, complaint, run_no, open_time, close_time, unit, status, notes } = req.body;
+            var { name, phone, bib, location, complaint, open_time, status, notes } = req.body;
 
             name = name.toString();
             phone = phone.toString();
@@ -31,63 +31,57 @@ router.post('/', async (req, res) => {
 
             // Validate input before adding to DB - name, phone, bib, location, complaint, and notes are all user-generated.
             if (name.length < 1) {
-                res.json({ 'error': 'Name Invalid' });
-                res.status(403);
+                res.status(400).send({ 'error': 'Name Invalid' });
                 res.end();
             }
-            if (phone.length < 1) {
-                res.json({ 'error': 'Phone Number Invalid' });
-                res.status(403);
+            else if (phone.length < 1) {
+                res.status(400).send({ 'error': 'Phone Number Invalid' });
                 res.end();
             }
-            if (bib.length < 1) {
-                res.json({ 'error': 'Bib Number Invalid' });
-                res.status(403);
+            else if (bib.length < 1) {
+                res.status(400).send({ 'error': 'Bib Number Invalid' });
                 res.end();
             }
-            if (location.length < 1) {
-                res.json({ 'error': 'Location Invalid' });
-                res.status(403);
+            else if (location.length < 1) {
+                res.status(400).send({ 'error': 'Location Invalid' });
                 res.end();
             }
-            if (complaint.length < 1) {
-                res.json({ 'error': 'Complaint Invalid' });
-                res.status(403);
+            else if (complaint.length < 1) {
+                res.status(400).send({ 'error': 'Complaint Invalid' });
                 res.end();
             }
-            if (notes.length < 1) {
+            else if (notes.length < 1) {
                 notes = "";
             }
+            else {
+                // Create auto-generated data before adding to DB
+                open_time = new Date();
+                close_time = "";
+                unit = "";
+                status = "Unassigned";
 
-            // Create auto-generated data before adding to DB
-            run_no = "";
-            open_time = new Date();
-            close_time = "";
-            unit = "";
-            status = "Unassigned";
-
-            const sql = 'INSERT INTO calls (name, phone, bib, location, complaint, run_no, open_time, close_time, unit, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            db.run(sql, [ name, phone, bib, location, complaint, run_no, open_time, close_time, unit, status, notes ], function (err) {
-                if (err) {
-                    console.error(err.message);
-                    res.status(500).send('Internal server error');
-                } else {
-                    const id = this.lastID;
-                    res.status(201).send({ name, phone, bib, location, complaint, run_no, open_time, close_time, unit, status, notes });
-                }
-            });
-
+                const sql = 'INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                db.run(sql, [name, phone, bib, location, complaint, open_time, close_time, unit, status, notes], function (err) {
+                    if (err) {
+                        console.error(err.message);
+                        res.status(500).send('Internal server error');
+                        res.end();
+                    } else {
+                        const callID = this.lastID;
+                        res.status(201).send({ callID });
+                        res.end();
+                    }
+                });
+            }
         }
         else {
-            res.json({ 'error': "missing inputs" });
-            res.status(500);
+            res.status(400).send({ 'error': 'Missing Data' });
             res.end();
         }
     }
     catch (error) {
         console.error(error);
-        res.json({ "error": error });
-        res.status(500);
+        res.status(500).send({ 'error': error });
         res.end();
     }
 });
