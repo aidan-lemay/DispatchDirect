@@ -23,7 +23,6 @@
 
             <button @click="submit" class="submit">Submit</button>
         </div>
-
     </div>
 </template>
 
@@ -39,13 +38,13 @@ button {
 }
 
 .content {
-  width: 100%;
-  display: grid;
-  justify-content: center;
-  border: 1px solid black;
-  padding: 10px;
-  margin: 20px;
-  text-align: center;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    border: 1px solid black;
+    padding: 10px;
+    margin: 20px;
+    text-align: center;
 }
 
 input {
@@ -73,129 +72,118 @@ textarea {
 }
 
 .submit {
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  padding: 14px 28px;
-  font-size: 16px;
-  cursor: pointer;
-  border-color: #04AA6D;
-  color: green;
+    border: 2px solid black;
+    background-color: white;
+    color: black;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color: #04AA6D;
+    color: green;
 }
+
 .submit:hover {
-  background-color: #04AA6D;
-  color: white;
+    background-color: #04AA6D;
+    color: white;
 }
 
 .callForm {
-  display: grid;
-  width: auto;
-  justify-content: center;
+    display: grid;
+    width: auto;
+    justify-content: center;
 }
 </style>
 
-<script>
-export default {
-    data() {
-        return {
-            name: '',
-            number: '',
-            bib: '',
-            location: '',
-            complaint: '',
-            notes: '',
-        }
-    },
-    methods: {
-        submit() {
-            const url = 'https://dispatchapi.k5doc.tech/';
+<script setup>
+import { ref } from 'vue';
 
-            // Validation
-            const validationError = this.validateForm();
-            if (validationError) {
-                alert(validationError);
-                return;
-            }
+const name = ref('');
+const number = ref('');
+const bib = ref('');
+const location = ref('');
+const complaint = ref('');
+const notes = ref('');
 
-            const formData = {
-                name: this.name.trim(),
-                phone: this.number.replace(/\D/g, ''),
-                bib: this.bib.trim(),
-                location: this.location.trim(),
-                complaint: this.complaint.trim(),
-                notes: this.notes.trim()
-            };
+const submit = () => {
+    const url = 'https://dispatchapi.k5doc.tech/';
 
-            fetch(url + 'api/calls', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Call submitted successfully!');
-                        this.clearForm();
-                    } else {
-                        alert('Failed to submit call.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting call:', error);
-                    alert('An error occurred while submitting the call.');
-                });
-        },
-
-        validateForm() {
-            if (this.name.length === 0 || this.name.length > 100) {
-                return 'Name must be between 1 and 100 characters.';
-            }
-
-            if (this.number.replace(/\D/g, '').length !== 10) {
-                return 'Phone number must be 10 digits.';
-            }
-
-            if (this.bib.length === 0 || this.bib.length > 10) {
-                return 'Bib must be between 1 and 10 characters.';
-            }
-
-            if (this.location.length === 0 || this.location.length > 200) {
-                return 'Location must be between 1 and 200 characters.';
-            }
-
-            if (this.complaint.length === 0 || this.complaint.length > 500) {
-                return 'Complaint must be between 1 and 500 characters.';
-            }
-
-            return null; // No validation errors
-        },
-
-        clearForm() {
-            this.name = '';
-            this.number = '';
-            this.bib = '';
-            this.location = '';
-            this.complaint = '';
-            this.notes = '';
-            this.error = '';
-        },
-
-        formatPhoneNumber() {
-            // Remove non-digit characters from the input
-            let phoneNumber = this.number.replace(/\D/g, '');
-
-            // Format the phone number as (000) 000-0000
-            if (phoneNumber.length <= 10) {
-                phoneNumber = phoneNumber.replace(/^(\d{3})(\d{0,3})(\d{0,4}).*/, '($1) $2-$3');
-            } else {
-                phoneNumber = phoneNumber.slice(0, 10);
-                phoneNumber = phoneNumber.replace(/^(\d{3})(\d{3})(\d{0,4}).*/, '($1) $2-$3');
-            }
-
-            // Update the model with the formatted phone number
-            this.number = phoneNumber;
-        }
+    const validationError = validateForm();
+    if (validationError) {
+        alert(validationError);
+        return;
     }
-}
+
+    const formData = {
+        name: name.value.trim(),
+        phone: number.value.replace(/\D/g, ''),
+        bib: bib.value.trim(),
+        location: location.value.trim(),
+        complaint: complaint.value.trim(),
+        notes: notes.value.trim()
+    };
+
+    fetch(url + 'api/calls', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Call submitted successfully!');
+                clearForm();
+            } else {
+                alert('Failed to submit call.');
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting call:', error);
+            alert('An error occurred while submitting the call.');
+        });
+};
+
+const validateForm = () => {
+    if (name.value.length === 0 || name.value.length > 100) {
+        return 'Name must be between 1 and 100 characters.';
+    }
+
+    if (number.value.replace(/\D/g, '').length !== 10) {
+        return 'Phone number must be 10 digits.';
+    }
+
+    if (bib.value.length === 0 || bib.value.length > 10) {
+        return 'Bib must be between 1 and 10 characters.';
+    }
+
+    if (location.value.length === 0 || location.value.length > 200) {
+        return 'Location must be between 1 and 200 characters.';
+    }
+
+    if (complaint.value.length === 0 || complaint.value.length > 500) {
+        return 'Complaint must be between 1 and 500 characters.';
+    }
+
+    return null; // No validation errors
+};
+
+const clearForm = () => {
+    name.value = '';
+    number.value = '';
+    bib.value = '';
+    location.value = '';
+    complaint.value = '';
+    notes.value = '';
+};
+
+const formatPhoneNumber = () => {
+    let phoneNumber = number.value.replace(/\D/g, '');
+    if (phoneNumber.length <= 10) {
+        phoneNumber = phoneNumber.replace(/^(\d{3})(\d{0,3})(\d{0,4}).*/, '($1) $2-$3');
+    } else {
+        phoneNumber = phoneNumber.slice(0, 10);
+        phoneNumber = phoneNumber.replace(/^(\d{3})(\d{3})(\d{0,4}).*/, '($1) $2-$3');
+    }
+    number.value = phoneNumber;
+};
 </script>
