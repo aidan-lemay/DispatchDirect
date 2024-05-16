@@ -96,6 +96,8 @@ textarea {
 
 <script setup>
 import { ref } from 'vue';
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 const name = ref('');
 const number = ref('');
@@ -109,7 +111,13 @@ const submit = () => {
 
     const validationError = validateForm();
     if (validationError) {
-        alert(validationError);
+        toast(validationError, {
+            "theme": "colored",
+            "type": "warning",
+            "autoClose": 5000,
+            "dangerouslyHTMLString": true
+        })
+        console.error(validationError);
         return;
     }
 
@@ -131,15 +139,31 @@ const submit = () => {
     })
         .then(response => {
             if (response.ok) {
-                alert('Call submitted successfully!');
+                toast("Call Submitted Successfully!", {
+                    "theme": "colored",
+                    "type": "success",
+                    "autoClose": 5000,
+                    "dangerouslyHTMLString": true
+                })
                 clearForm();
             } else {
-                alert('Failed to submit call.');
+                toast("Failed to submit call.", {
+                    "theme": "colored",
+                    "type": "warning",
+                    "autoClose": 5000,
+                    "dangerouslyHTMLString": true
+                })
+                console.error("Failed to submit call");
             }
         })
         .catch(error => {
-            console.error('Error submitting call:', error);
-            alert('An error occurred while submitting the call.');
+            toast(error, {
+                "theme": "colored",
+                "type": "warning",
+                "autoClose": 5000,
+                "dangerouslyHTMLString": true
+            })
+            console.error(error);
         });
 };
 

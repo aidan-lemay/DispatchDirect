@@ -261,6 +261,8 @@ tr {
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 const units = ref([]);
 const calls = ref([]);
@@ -281,7 +283,7 @@ const getUnits = () => {
       units.value = response;
     })
     .catch((error) => {
-      console.log('Looks like there was a problem: \n', error);
+      console.error(error);
     });
 }
 
@@ -295,13 +297,12 @@ const getCalls = () => {
       calls.value = response;
     })
     .catch((error) => {
-      console.log('Looks like there was a problem: \n', error);
+      console.error(error);
     });
 }
 
 // Function to update the assigned unit for a call
 const updateAssignedUnit = (callID, unitID) => {
-  // Make API call to update the assigned unit for the call
   fetch(url + `api/calls/unit`, {
     method: 'PUT',
     headers: { 'Content-type': 'application/json' },
@@ -310,11 +311,22 @@ const updateAssignedUnit = (callID, unitID) => {
     .then(res => {
       if (res.ok) {
         console.log('Assigned unit updated successfully');
+        toast("Updated Unit!", {
+          "theme": "colored",
+          "type": "success",
+          "autoClose": 5000,
+          "dangerouslyHTMLString": true
+        })
         // Reload both tables data from the API
         getCalls();
         getUnits();
       } else {
-        alert("Failed To Update Unit")
+        toast("Failed to update unit.", {
+          "theme": "colored",
+          "type": "warning",
+          "autoClose": 5000,
+          "dangerouslyHTMLString": true
+        })
         throw new Error('Failed to update assigned unit');
       }
     })
@@ -340,11 +352,23 @@ const closeCall = (callID, status) => {
     .then(res => {
       if (res.ok) {
         console.log('Call closed successfully');
+        toast("Call closed successfully!", {
+          "theme": "colored",
+          "type": "success",
+          "autoClose": 5000,
+          "dangerouslyHTMLString": true
+        })
+
         // Reload both tables data from the API
         getCalls();
         getUnits();
       } else {
-        alert("Failed To Close Call")
+        toast("Failed to close call.", {
+          "theme": "colored",
+          "type": "warning",
+          "autoClose": 5000,
+          "dangerouslyHTMLString": true
+        })
         throw new Error('Failed to close the call');
       }
     })
@@ -364,11 +388,23 @@ const setStatus = (unitID, status) => {
       .then(res => {
         if (res.ok) {
           console.log('Unit statused successfully');
+          toast("Unit statused successfully!", {
+            "theme": "colored",
+            "type": "success",
+            "autoClose": 5000,
+            "dangerouslyHTMLString": true
+          })
+
           // Reload both tables data from the API
           getCalls();
           getUnits();
         } else {
-          alert("Failed To Status Unit")
+          toast("Failed to status unit.", {
+            "theme": "colored",
+            "type": "warning",
+            "autoClose": 5000,
+            "dangerouslyHTMLString": true
+          })
           throw new Error('Failed to status unit');
         }
       })
@@ -386,10 +422,21 @@ const setStatus = (unitID, status) => {
       .then(res => {
         if (res.ok) {
           console.log('Unit statused successfully');
+          toast("Unit statused successfully!", {
+            "theme": "colored",
+            "type": "success",
+            "autoClose": 5000,
+            "dangerouslyHTMLString": true
+          })
           getCalls();
           getUnits();
         } else {
-          alert("Failed To Status Unit")
+          toast("Failed to status unit.", {
+            "theme": "colored",
+            "type": "warning",
+            "autoClose": 5000,
+            "dangerouslyHTMLString": true
+          })
           throw new Error('Failed to status unit');
         }
       })
@@ -404,7 +451,12 @@ const submit = (name, number) => {
   // Validation
   const validationError = validateForm(name, number);
   if (validationError) {
-    alert(validationError);
+    toast(validationError, {
+      "theme": "colored",
+      "type": "warning",
+      "autoClose": 5000,
+      "dangerouslyHTMLString": true
+    })
     return;
   }
 
@@ -422,17 +474,32 @@ const submit = (name, number) => {
   })
     .then(response => {
       if (response.ok) {
-        alert('Unit added successfully!');
+        toast("Unit Added Successfully!", {
+          "theme": "colored",
+          "type": "success",
+          "autoClose": 5000,
+          "dangerouslyHTMLString": true
+        })
         clearForm();
         getUnits(); // Re-query units data
         getCalls(); // Re-query calls data
       } else {
-        alert('Failed to add unit.');
+        toast("Failed to add unit.", {
+          "theme": "colored",
+          "type": "warning",
+          "autoClose": 5000,
+          "dangerouslyHTMLString": true
+        })
       }
     })
     .catch(error => {
       console.error('Error adding unit:', error);
-      alert('An error occurred while creating the unit.');
+      toast("Failed to add unit: " + error, {
+        "theme": "colored",
+        "type": "warning",
+        "autoClose": 5000,
+        "dangerouslyHTMLString": true
+      })
     });
 };
 
