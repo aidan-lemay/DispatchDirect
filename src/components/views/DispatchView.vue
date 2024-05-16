@@ -105,14 +105,12 @@
         <div class="card-body">
           <table>
             <tr>
-              <th>UnitID</th>
               <th>Identifier</th>
               <th>Phone Number</th>
               <th>Current Status</th>
               <th>Out Of Service</th>
             </tr>
             <tr v-for="unit in unassignedUnits" :key="unit.unitID" :class="getRowClass(unit.status)">
-              <td>{{ unit.unitID }}</td>
               <td>{{ unit.name }}</td>
               <td>{{ displayPhoneFormat(unit.contact) }}</td>
               <td>{{ unit.status }}</td>
@@ -125,7 +123,6 @@
             </tr>
 
             <tr v-for="unit in inProgressUnits" :key="unit.unitID" :class="getRowClass(unit.status)">
-              <td>{{ unit.unitID }}</td>
               <td>{{ unit.name }}</td>
               <td>{{ displayPhoneFormat(unit.contact) }}</td>
               <td>{{ unit.status }}</td>
@@ -138,7 +135,6 @@
             </tr>
 
             <tr v-for="unit in oosUnits" :key="unit.unitID" :class="getRowClass(unit.status)">
-              <td>{{ unit.unitID }}</td>
               <td>{{ unit.name }}</td>
               <td>{{ displayPhoneFormat(unit.contact) }}</td>
               <td>{{ unit.status }}</td>
@@ -213,6 +209,11 @@ input {
   cursor: pointer;
 }
 
+select {
+  max-width: 10ch;
+  word-wrap:break-word;
+}
+
 .submit {
   border: 2px solid black;
   background-color: white;
@@ -256,6 +257,9 @@ tr {
   padding: 10px;
   margin: 20px;
   text-align: left;
+
+  max-width: 20ch;
+  word-wrap: break-word;
 }
 </style>
 
