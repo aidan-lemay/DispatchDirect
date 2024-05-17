@@ -45,7 +45,7 @@ const call = computed(() => props.currentCall[0]);
       </div>
 
       <div class="modal-footer">
-        <button @click="closeCall(call.callID, call.status), emit('modal-close')" class="closeCallBtn" :disabled="call.status === 'Closed'">Close Call</button>
+        <button @click="closeCall(call.callID, call.status), emit('modal-close')" class="closeCallBtn" :disabled="call.status == 'Closed'">Close Call</button>
       </div>
 
     </div>
@@ -147,6 +147,16 @@ const call = computed(() => props.currentCall[0]);
 .closeCallBtn:hover {
   background-color: #f44336;
   color: white;
+}
+.closeCallBtn:disabled {
+  border-color: #666;
+  color: #666;
+}
+.closeCallBtn:hover:disabled {
+  border-color: #666;
+  color: #666;
+  background-color: white;
+  cursor: default;
 }
 
 </style>

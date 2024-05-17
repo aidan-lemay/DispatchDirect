@@ -41,8 +41,7 @@
               </td>
               <td>{{ call.status }}</td>
               <td>
-                <!-- <button @click="closeCall(call.callID, call.status)" :disabled="call.status === 'Closed'">Close Call</button> -->
-                <button @click="openModal(call.callID)">Show Details</button>
+                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
               </td>
             </tr>
 
@@ -72,8 +71,7 @@
               </td>
               <td>{{ call.status }}</td>
               <td>
-                <!-- <button @click="closeCall(call.callID, call.status)" :disabled="call.status === 'Closed'">Close Call</button> -->
-                <button @click="openModal(call.callID)">Show Details</button>
+                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
               </td>
             </tr>
 
@@ -103,8 +101,7 @@
               </td>
               <td>{{ call.status }}</td>
               <td>
-                <!-- <button @click="closeCall(call.callID, call.status)" :disabled="call.status === 'Closed'">Close Call</button> -->
-                <button @click="openModal(call.callID)">Show Details</button>
+                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
               </td>
             </tr>
           </table>
@@ -222,6 +219,40 @@
   text-align: center;
 }
 
+.detailsButton {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  padding: 14px 28px;
+  font-size: 12px;
+  cursor: pointer;
+  border-color: black;
+  color: black;
+}
+.detailsButton:hover {
+  background-color: #f1c232;
+  color: white;
+}
+
+select {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  font-size: 12px;
+  cursor: pointer;
+  border-color: black;
+  color: black;
+
+  max-width: 15ch;
+  word-wrap: break-word;
+}
+select:disabled {
+  border-color: #666;
+  color: #666;
+  background-color: white;
+  cursor: default;
+}
+
 label {
   padding: 5px;
   font-size: 20px;
@@ -244,11 +275,6 @@ input {
   cursor: pointer;
 }
 
-select {
-  max-width: 10ch;
-  word-wrap: break-word;
-}
-
 .submit {
   border: 2px solid black;
   background-color: white;
@@ -259,7 +285,6 @@ select {
   border-color: #04aa6d;
   color: green;
 }
-
 .submit:hover {
   background-color: #04aa6d;
   color: white;
