@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="navMenuContainer">
     <button @click="navigateCalls" class="callButton">Call Form</button>
     <button @click="navigateDispatch" class="dispatchButton">Dispatch</button>
   </div>
@@ -25,6 +25,12 @@ template {
   width: 100%;
   height: 100%;
   padding: 0%;
+}
+.navMenuContainer {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  gap: 10px;
 }
 .callButton {
   width: 49%;
