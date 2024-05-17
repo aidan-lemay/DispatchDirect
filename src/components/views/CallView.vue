@@ -38,7 +38,6 @@ button {
 }
 
 .content {
-    width: 100%;
     display: grid;
     justify-content: center;
     border: 1px solid black;
