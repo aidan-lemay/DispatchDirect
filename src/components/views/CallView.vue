@@ -106,8 +106,7 @@ const location = ref('');
 const complaint = ref('');
 const notes = ref('');
 
-const url = 'http://localhost:3007/'
-// const url = 'https://dispatchapi.k5doc.tech/';
+const url = ref(import.meta.env.VITE_URL);
 
 const submit = () => {
 
@@ -132,7 +131,7 @@ const submit = () => {
         notes: notes.value.trim()
     };
 
-    fetch(url + 'api/calls', {
+    fetch(url.value + 'api/calls', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

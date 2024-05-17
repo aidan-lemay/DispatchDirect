@@ -354,14 +354,13 @@ const closeUnitModal = () => {
   isUnitModalOpened.value = false;
 };
 
-const url = "http://localhost:3007/";
-// const url = 'https://dispatchapi.k5doc.tech/';
+const url = ref(import.meta.env.VITE_URL);
 
 const POLLING_INTERVAL = 5000; // 5 seconds
 
 // Function to fetch units from the API
 const getUnits = () => {
-  fetch(url + "api/units", {
+  fetch(url.value + "api/units", {
     headers: { "Content-type": "application/json" },
   })
     .then((res) => res.json())
@@ -375,7 +374,7 @@ const getUnits = () => {
 
 // Function to fetch calls from the API
 const getCalls = () => {
-  fetch(url + "api/calls", {
+  fetch(url.value + "api/calls", {
     headers: { "Content-type": "application/json" },
   })
     .then((res) => res.json())
@@ -389,7 +388,7 @@ const getCalls = () => {
 
 // Function to update the assigned unit for a call
 const updateAssignedUnit = (callID, unitID) => {
-  fetch(url + `api/calls/unit`, {
+  fetch(url.value + `api/calls/unit`, {
     method: "PUT",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify({ callID: callID, unitID: unitID }),
@@ -431,7 +430,7 @@ const closeCall = (callID, status) => {
   }
 
   // Make API call to close the call
-  fetch(url + `api/calls/close`, {
+  fetch(url.value + `api/calls/close`, {
     method: "PUT",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify({ callID: callID }),
@@ -467,7 +466,7 @@ const closeCall = (callID, status) => {
 // Function to change unit status
 const setStatus = (unitID, status) => {
   if (status === "OOS") {
-    fetch(url + `api/units/BIS`, {
+    fetch(url.value + `api/units/BIS`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ unitID: unitID }),
@@ -501,7 +500,7 @@ const setStatus = (unitID, status) => {
   }
   // If unit status is NOT OOS
   else {
-    fetch(url + `api/units/OOS`, {
+    fetch(url.value + `api/units/OOS`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ unitID: unitID }),
