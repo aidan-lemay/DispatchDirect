@@ -22,12 +22,12 @@ const call = computed(() => props.currentCall[0]);
     <div class="modal-container" ref="target">
 
       <div class="modal-header">
-        <div class="btnRight">
-          <button @click="emit('modal-close')" class="close-btn">X</button>
-        </div>
-
         <div class="header">
           <h2 class="content">Call Details for Run Number: {{ call.callID }}</h2>
+        </div>
+
+        <div class="btnRight">
+          <button @click="emit('modal-close')" class="close-btn">X</button>
         </div>
       </div>
 
@@ -77,36 +77,32 @@ const call = computed(() => props.currentCall[0]);
   max-width: calc(100% - 80px);
   max-height: calc(100% - 80px);
   overflow: auto;
-  max-height: calc(100vh - 125px);
 }
 
 .modal-header {
   display: flex;
-  justify-content: flex-start;
-  position: relative;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  margin: 20px;
+  margin-bottom: 20px;
 }
 
 .header {
-  flex: 0 1 auto;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  flex: 1;
+  text-align: center;
 }
 
 .btnRight {
-  flex: 0 1 auto;
+  flex: 0;
   margin-left: auto;
-  margin-right: 20px;
 }
 
 .close-btn {
   border: 2px solid black;
   background-color: white;
   color: black;
-  padding: 14px 28px;
-  font-size: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
   cursor: pointer;
   border-color: #f44336;
   color: #f44336;
@@ -117,10 +113,17 @@ const call = computed(() => props.currentCall[0]);
 }
 
 .modal-body {
-  display: grid;
-  justify-content: center;
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   font-size: 16px;
+  text-align: left; /* Ensuring text within modal body is left-aligned */
+}
+
+.content {
+  word-wrap: break-word;
+  margin: 5px 0;
+  max-width: 100%; /* Ensuring content doesn't exceed the modal width */
 }
 
 .heading {
@@ -128,18 +131,17 @@ const call = computed(() => props.currentCall[0]);
 }
 
 .modal-footer {
-  margin: 20px;
-  display: grid;
+  display: flex;
   justify-content: center;
-  justify-items: center;
+  margin-top: 20px;
 }
 
 .closeCallBtn {
   border: 2px solid black;
   background-color: white;
   color: black;
-  padding: 14px 28px;
-  font-size: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
   cursor: pointer;
   border-color: #f44336;
   color: #f44336;
@@ -157,6 +159,21 @@ const call = computed(() => props.currentCall[0]);
   color: #666;
   background-color: white;
   cursor: default;
+}
+
+@media (max-width: 768px) {
+  .modal-container {
+    width: 90%;
+  }
+
+  .modal-header {
+    flex-direction: row-reverse; /* Ensuring close button stays on the right */
+  }
+
+  .header {
+    text-align: center;
+    margin-top: 10px;
+  }
 }
 
 </style>

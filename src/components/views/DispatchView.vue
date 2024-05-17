@@ -20,8 +20,8 @@
               :key="call.callID"
               :class="getRowClass(call.status)"
             >
-              <td>{{ call.location }}</td>
-              <td>{{ call.complaint }}</td>
+              <td>{{ truncateText(call.location) }}</td>
+              <td>{{ truncateText(call.complaint) }}</td>
               <td>{{ call.open_time }}</td>
               <td>
                 <select
@@ -41,7 +41,9 @@
               </td>
               <td>{{ call.status }}</td>
               <td>
-                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
+                <button @click="openModal(call.callID)" class="detailsButton">
+                  Show Details
+                </button>
               </td>
             </tr>
 
@@ -50,8 +52,8 @@
               :key="call.callID"
               :class="getRowClass(call.status)"
             >
-              <td>{{ call.location }}</td>
-              <td>{{ call.complaint }}</td>
+              <td>{{ truncateText(call.location) }}</td>
+              <td>{{ truncateText(call.complaint) }}</td>
               <td>{{ call.open_time }}</td>
               <td>
                 <select
@@ -71,7 +73,9 @@
               </td>
               <td>{{ call.status }}</td>
               <td>
-                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
+                <button @click="openModal(call.callID)" class="detailsButton">
+                  Show Details
+                </button>
               </td>
             </tr>
 
@@ -80,8 +84,8 @@
               :key="call.callID"
               :class="getRowClass(call.status)"
             >
-              <td>{{ call.location }}</td>
-              <td>{{ call.complaint }}</td>
+              <td>{{ truncateText(call.location) }}</td>
+              <td>{{ truncateText(call.complaint) }}</td>
               <td>{{ call.open_time }}</td>
               <td>
                 <select
@@ -101,7 +105,9 @@
               </td>
               <td>{{ call.status }}</td>
               <td>
-                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
+                <button @click="openModal(call.callID)" class="detailsButton">
+                  Show Details
+                </button>
               </td>
             </tr>
           </table>
@@ -189,16 +195,17 @@
       :isOpen="isModalOpened"
       :currentCall="currentCall"
       @modal-close="closeModal"
-      name="Detail Modal">
+      name="Detail Modal"
+    >
     </modal-component>
 
     <unit-modal
       :isOpen="isUnitModalOpened"
       @modal-close="closeUnitModal"
-      name="Unit Modal">
+      name="Unit Modal"
+    >
     </unit-modal>
   </div>
-  
 </template>
 
 <style scoped>
@@ -321,6 +328,11 @@ tr {
   margin: 20px;
   text-align: left;
 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px; /* Adjust as needed */
+
   max-width: 20ch;
   word-wrap: break-word;
 }
@@ -422,7 +434,7 @@ const updateAssignedUnit = (callID, unitID) => {
 
 // Function to close the call
 const closeCall = (callID, status) => {
-  console.log(callID)
+  console.log(callID);
   // Check if the call is already closed or has a "Closed" status
   if (status === "Closed") {
     console.log("Call is already closed");
@@ -549,6 +561,14 @@ const displayPhoneFormat = (number) => {
   return phoneNumber;
 };
 
+// Truncate Text Function
+const truncateText = (text) => {
+  if (text.length > 100) {
+    return text.substring(0, 100) + "...";
+  }
+  return text;
+};
+
 // Call Sorting
 const unassignedCalls = computed(() => {
   return calls.value
@@ -613,8 +633,8 @@ const providedFunctions = {
   displayPhoneFormat,
   closeCall,
   getUnits,
-  getCalls
+  getCalls,
 };
 
-provide('providedFunctions', providedFunctions);
+provide("providedFunctions", providedFunctions);
 </script>
