@@ -1,6 +1,6 @@
 <script setup>
 import { ref, inject } from "vue";
-import { onClickOutside } from '@vueuse/core';
+import { onClickOutside } from "@vueuse/core";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
@@ -15,10 +15,10 @@ const url = "http://localhost:3007/";
 // const url = 'https://dispatchapi.k5doc.tech/';
 
 const emit = defineEmits(["modal-close"]);
-const { getUnits, getCalls } = inject('providedFunctions');
+const { getUnits, getCalls } = inject("providedFunctions");
 
 const target = ref(null);
-onClickOutside(target, () => emit('modal-close'));
+onClickOutside(target, () => emit("modal-close"));
 
 // Function to submit unit form
 const addUnit = (name, number) => {
@@ -76,7 +76,7 @@ const addUnit = (name, number) => {
         dangerouslyHTMLString: true,
       });
     });
-}
+};
 
 // Function to validate unit form
 const validateForm = (name, number) => {
@@ -114,35 +114,30 @@ const formatPhoneNumber = () => {
   }
   number.value = phoneNumber;
 };
-
 </script>
 
 <template>
   <div v-if="props.isOpen" class="modal-mask" ref="target">
     <div class="modal-container" ref="target">
-
       <div class="modal-header">
-        <div class="btnRight">
-          <button @click="emit('modal-close')" class="close-btn">X</button>
+        <div class="header-content">
+          <div class="unitForm">
+            <label for="name">Unit Identifier</label>
+            <input v-model="name" placeholder="Unit" />
+
+            <label for="number">Contact Number</label>
+            <input
+              v-model="number"
+              placeholder="(   ) ___-____"
+              @input="formatPhoneNumber"
+            />
+
+            <button @click="addUnit(name, number)" class="submit">
+              Submit
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div class="modal-body">
-        <div class="card-body">
-        <div class="unitForm">
-        <label for="name">Unit Identifier</label>
-        <input v-model="name" placeholder="Unit" />
-
-        <label for="number">Contact Number</label>
-        <input
-          v-model="number"
-          placeholder="(   ) ___-____"
-          @input="formatPhoneNumber"
-        />
-
-        <button @click="addUnit(name, number)" class="submit">Submit</button>
-      </div>
-      </div>
+        <button @click="emit('modal-close')" class="close-btn">X</button>
       </div>
     </div>
   </div>
@@ -171,31 +166,28 @@ const formatPhoneNumber = () => {
   transform: translate(-50%, -50%);
   box-sizing: border-box;
   max-width: calc(100% - 80px);
-  max-height: calc(100% - 80px);
+  min-height: 300px; /* Set a minimum height */
+  max-height: 90vh; /* Set a maximum height */
   overflow: auto;
-  max-height: calc(100vh - 125px);
 }
 
 .modal-header {
   display: flex;
-  justify-content: flex-start;
-  position: relative;
+  justify-content: space-between;
+  align-items: flex-start;
   width: 100%;
-  margin: 20px;
 }
 
-.btnRight {
-  flex: 0 1 auto;
-  margin-left: auto;
-  margin-right: 20px;
+.header-content {
+  flex: 1;
 }
 
 .close-btn {
   border: 2px solid black;
   background-color: white;
   color: black;
-  padding: 14px 28px;
-  font-size: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
   cursor: pointer;
   border-color: #f44336;
   color: #f44336;
@@ -205,31 +197,15 @@ const formatPhoneNumber = () => {
   color: white;
 }
 
-.btnRight {
-  flex: 0 1 auto;
-  margin-left: auto;
-  margin-right: 20px;
-}
-
 .modal-body {
-  display: grid;
-  justify-content: center;
-  justify-items: center;
-  font-size: 16px;
-}
-
-.modal-footer {
-  margin: 20px;
-  display: grid;
-  justify-content: center;
-  justify-items: center;
+  padding: 20px;
 }
 
 .submit {
   border: 2px solid black;
   background-color: white;
   color: black;
-  padding: 14px 28px;
+  padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
   border-color: #04aa6d;
@@ -263,5 +239,4 @@ label {
   padding: 5px;
   font-size: 20px;
 }
-
 </style>

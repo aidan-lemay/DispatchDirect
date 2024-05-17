@@ -131,6 +131,7 @@
                 <button
                   @click="setStatus(unit.unitID, unit.status)"
                   :disabled="unit.status === 'Busy'"
+                  class="detailsButton"
                 >
                   {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
@@ -149,6 +150,7 @@
                 <button
                   @click="setStatus(unit.unitID, unit.status)"
                   :disabled="unit.status === 'Busy'"
+                  class="detailsButton"
                 >
                   {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
@@ -167,6 +169,7 @@
                 <button
                   @click="setStatus(unit.unitID, unit.status)"
                   :disabled="unit.status === 'Busy'"
+                  class="detailsButton"
                 >
                   {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
@@ -231,7 +234,7 @@
 }
 .detailsButton:hover {
   background-color: #f1c232;
-  color: white;
+  color: black;
 }
 
 select {
