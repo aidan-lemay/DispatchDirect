@@ -11,8 +11,7 @@ const props = defineProps({
 const name = ref("");
 const number = ref("");
 
-const url = "http://localhost:3007/";
-// const url = 'https://dispatchapi.k5doc.tech/';
+const url = ref(import.meta.env.VITE_URL);
 
 const emit = defineEmits(["modal-close"]);
 const { getUnits, getCalls } = inject("providedFunctions");
@@ -39,7 +38,7 @@ const addUnit = (name, number) => {
     contact: number.replace(/\D/g, ""),
   };
 
-  fetch(url + "api/units", {
+  fetch(url.value + "api/units", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
