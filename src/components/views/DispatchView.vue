@@ -1,98 +1,107 @@
 <template>
   <div class="content">
-
-
     <div class="dispatch">
-
       <!-- Calls -->
       <div class="card">
         <h2>Call Dispatch</h2>
         <div class="card-body">
           <table>
             <tr>
-              <th>CallID</th>
-              <th>Caller Name</th>
-              <th>Callback Number</th>
-              <th>Rider Bib</th>
               <th>Location of Call</th>
               <th>Complaint</th>
               <th>Call Open</th>
-              <th>Call Close</th>
               <th>Assigned Unit</th>
               <th>Call Status</th>
-              <th>Notes</th>
-              <th>Close Call</th>
+              <th>Details</th>
             </tr>
 
-            <tr v-for="call in unassignedCalls" :key="call.callID" :class="getRowClass(call.status)">
-              <td>{{ call.callID }}</td>
-              <td>{{ call.name }}</td>
-              <td>{{ displayPhoneFormat(call.phone) }}</td>
-              <td>{{ call.bib }}</td>
+            <tr
+              v-for="call in unassignedCalls"
+              :key="call.callID"
+              :class="getRowClass(call.status)"
+            >
               <td>{{ call.location }}</td>
               <td>{{ call.complaint }}</td>
               <td>{{ call.open_time }}</td>
-              <td>{{ call.close_time }}</td>
               <td>
-                <select v-model="call.unit" @change="updateAssignedUnit(call.callID, call.unit)"
-                  :disabled="call.status === 'Closed'">
-                  <option v-for="unit in units" :key="unit.unitID" :value="unit.unitID"
-                    :selected="unit.unitID === call.unit">{{ unit.name }}</option>
+                <select
+                  v-model="call.unit"
+                  @change="updateAssignedUnit(call.callID, call.unit)"
+                  :disabled="call.status === 'Closed'"
+                >
+                  <option
+                    v-for="unit in units"
+                    :key="unit.unitID"
+                    :value="unit.unitID"
+                    :selected="unit.unitID === call.unit"
+                  >
+                    {{ unit.name }}
+                  </option>
                 </select>
               </td>
               <td>{{ call.status }}</td>
-              <td>{{ call.notes }}</td>
               <td>
-                <button @click="closeCall(call.callID, call.status)" :disabled="call.status === 'Closed'">Close
-                  Call</button>
+                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
               </td>
             </tr>
 
-            <tr v-for="call in inProgressCalls" :key="call.callID" :class="getRowClass(call.status)">
-              <td>{{ call.callID }}</td>
-              <td>{{ call.name }}</td>
-              <td>{{ displayPhoneFormat(call.phone) }}</td>
-              <td>{{ call.bib }}</td>
+            <tr
+              v-for="call in inProgressCalls"
+              :key="call.callID"
+              :class="getRowClass(call.status)"
+            >
               <td>{{ call.location }}</td>
               <td>{{ call.complaint }}</td>
               <td>{{ call.open_time }}</td>
-              <td>{{ call.close_time }}</td>
               <td>
-                <select v-model="call.unit" @change="updateAssignedUnit(call.callID, call.unit)"
-                  :disabled="call.status === 'Closed'">
-                  <option v-for="unit in units" :key="unit.unitID" :value="unit.unitID"
-                    :selected="unit.unitID === call.unit">{{ unit.name }}</option>
+                <select
+                  v-model="call.unit"
+                  @change="updateAssignedUnit(call.callID, call.unit)"
+                  :disabled="call.status === 'Closed'"
+                >
+                  <option
+                    v-for="unit in units"
+                    :key="unit.unitID"
+                    :value="unit.unitID"
+                    :selected="unit.unitID === call.unit"
+                  >
+                    {{ unit.name }}
+                  </option>
                 </select>
               </td>
               <td>{{ call.status }}</td>
-              <td>{{ call.notes }}</td>
               <td>
-                <button @click="closeCall(call.callID, call.status)" :disabled="call.status === 'Closed'">Close
-                  Call</button>
+                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
               </td>
             </tr>
 
-            <tr v-for="call in closedCalls" :key="call.callID" :class="getRowClass(call.status)">
-              <td>{{ call.callID }}</td>
-              <td>{{ call.name }}</td>
-              <td>{{ displayPhoneFormat(call.phone) }}</td>
-              <td>{{ call.bib }}</td>
+            <tr
+              v-for="call in closedCalls"
+              :key="call.callID"
+              :class="getRowClass(call.status)"
+            >
               <td>{{ call.location }}</td>
               <td>{{ call.complaint }}</td>
               <td>{{ call.open_time }}</td>
-              <td>{{ call.close_time }}</td>
               <td>
-                <select v-model="call.unit" @change="updateAssignedUnit(call.callID, call.unit)"
-                  :disabled="call.status === 'Closed'">
-                  <option v-for="unit in units" :key="unit.unitID" :value="unit.unitID"
-                    :selected="unit.unitID === call.unit">{{ unit.name }}</option>
+                <select
+                  v-model="call.unit"
+                  @change="updateAssignedUnit(call.callID, call.unit)"
+                  :disabled="call.status === 'Closed'"
+                >
+                  <option
+                    v-for="unit in units"
+                    :key="unit.unitID"
+                    :value="unit.unitID"
+                    :selected="unit.unitID === call.unit"
+                  >
+                    {{ unit.name }}
+                  </option>
                 </select>
               </td>
               <td>{{ call.status }}</td>
-              <td>{{ call.notes }}</td>
               <td>
-                <button @click="closeCall(call.callID, call.status)" :disabled="call.status === 'Closed'">Close
-                  Call</button>
+                <button @click="openModal(call.callID)" class="detailsButton">Show Details</button>
               </td>
             </tr>
           </table>
@@ -110,68 +119,94 @@
               <th>Current Status</th>
               <th>Out Of Service</th>
             </tr>
-            <tr v-for="unit in unassignedUnits" :key="unit.unitID" :class="getRowClass(unit.status)">
+            <tr
+              v-for="unit in unassignedUnits"
+              :key="unit.unitID"
+              :class="getRowClass(unit.status)"
+            >
               <td>{{ unit.name }}</td>
               <td>{{ displayPhoneFormat(unit.contact) }}</td>
               <td>{{ unit.status }}</td>
               <td>
-                <button @click="setStatus(unit.unitID, unit.status)" :disabled="unit.status === 'Busy'">
-                  {{ unit.status === 'Free' ? 'Set Unit OOS' : 'Set Unit BIS' }}
+                <button
+                  @click="setStatus(unit.unitID, unit.status)"
+                  :disabled="unit.status === 'Busy'"
+                  class="detailsButton"
+                >
+                  {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
-
               </td>
             </tr>
 
-            <tr v-for="unit in inProgressUnits" :key="unit.unitID" :class="getRowClass(unit.status)">
+            <tr
+              v-for="unit in inProgressUnits"
+              :key="unit.unitID"
+              :class="getRowClass(unit.status)"
+            >
               <td>{{ unit.name }}</td>
               <td>{{ displayPhoneFormat(unit.contact) }}</td>
               <td>{{ unit.status }}</td>
               <td>
-                <button @click="setStatus(unit.unitID, unit.status)" :disabled="unit.status === 'Busy'">
-                  {{ unit.status === 'Free' ? 'Set Unit OOS' : 'Set Unit BIS' }}
+                <button
+                  @click="setStatus(unit.unitID, unit.status)"
+                  :disabled="unit.status === 'Busy'"
+                  class="detailsButton"
+                >
+                  {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
-
               </td>
             </tr>
 
-            <tr v-for="unit in oosUnits" :key="unit.unitID" :class="getRowClass(unit.status)">
+            <tr
+              v-for="unit in oosUnits"
+              :key="unit.unitID"
+              :class="getRowClass(unit.status)"
+            >
               <td>{{ unit.name }}</td>
               <td>{{ displayPhoneFormat(unit.contact) }}</td>
               <td>{{ unit.status }}</td>
               <td>
-                <button @click="setStatus(unit.unitID, unit.status)" :disabled="unit.status === 'Busy'">
-                  {{ unit.status === 'Free' ? 'Set Unit OOS' : 'Set Unit BIS' }}
+                <button
+                  @click="setStatus(unit.unitID, unit.status)"
+                  :disabled="unit.status === 'Busy'"
+                  class="detailsButton"
+                >
+                  {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
-
               </td>
             </tr>
           </table>
         </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Add Units -->
-  <div class="card">
-    <h2>Add Unit</h2>
-    <div class="card-body">
-      <div class="unitForm">
-        <label for="name">Unit Identifier</label>
-        <input v-model="name" placeholder="Unit" />
-
-        <label for="number">Contact Number</label>
-        <input v-model="number" placeholder="(   ) ___-____" @input="formatPhoneNumber" />
-
-        <button @click="submit(name, number)" class="submit">Submit</button>
+        <div class="card-footer">
+          <button @click="openUnitModal()" class="submit">Add Unit</button>
+        </div>
       </div>
     </div>
   </div>
 
+  <div class="modal">
+    <modal-component
+      :isOpen="isModalOpened"
+      :currentCall="currentCall"
+      @modal-close="closeModal"
+      name="Detail Modal">
+    </modal-component>
+
+    <unit-modal
+      :isOpen="isUnitModalOpened"
+      @modal-close="closeUnitModal"
+      name="Unit Modal">
+    </unit-modal>
+  </div>
+  
 </template>
 
 <style scoped>
 .content {
+  width: 100%;
+}
+
+.modal {
   width: 100%;
 }
 
@@ -185,6 +220,40 @@
   padding: 10px;
   margin: 20px;
   text-align: center;
+}
+
+.detailsButton {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  padding: 14px 28px;
+  font-size: 12px;
+  cursor: pointer;
+  border-color: black;
+  color: black;
+}
+.detailsButton:hover {
+  background-color: #f1c232;
+  color: black;
+}
+
+select {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  font-size: 12px;
+  cursor: pointer;
+  border-color: black;
+  color: black;
+
+  max-width: 15ch;
+  word-wrap: break-word;
+}
+select:disabled {
+  border-color: #666;
+  color: #666;
+  background-color: white;
+  cursor: default;
 }
 
 label {
@@ -209,11 +278,6 @@ input {
   cursor: pointer;
 }
 
-select {
-  max-width: 10ch;
-  word-wrap:break-word;
-}
-
 .submit {
   border: 2px solid black;
   background-color: white;
@@ -221,12 +285,11 @@ select {
   padding: 14px 28px;
   font-size: 16px;
   cursor: pointer;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   color: green;
 }
-
 .submit:hover {
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
 }
 
@@ -264,323 +327,272 @@ tr {
 </style>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, provide } from "vue";
 import { toast } from "vue3-toastify";
+import ModalComponent from "./ModalComponent.vue";
+import UnitModal from "./UnitModal.vue";
 import "vue3-toastify/dist/index.css";
 
 const units = ref([]);
 const calls = ref([]);
-const name = ref('');
-const number = ref('');
+const currentCall = ref([]);
+const isModalOpened = ref(false);
+const isUnitModalOpened = ref(false);
 
-const url = 'http://localhost:3007/'
+const openModal = (callID) => {
+  isModalOpened.value = true;
+  currentCall.value = calls.value.filter((call) => call.callID === callID);
+};
+const closeModal = () => {
+  isModalOpened.value = false;
+};
+
+const openUnitModal = () => {
+  isUnitModalOpened.value = true;
+};
+const closeUnitModal = () => {
+  isUnitModalOpened.value = false;
+};
+
+const url = "http://localhost:3007/";
 // const url = 'https://dispatchapi.k5doc.tech/';
 
 const POLLING_INTERVAL = 5000; // 5 seconds
 
 // Function to fetch units from the API
 const getUnits = () => {
-  fetch(url + 'api/units', {
-    headers: { 'Content-type': 'application/json' },
+  fetch(url + "api/units", {
+    headers: { "Content-type": "application/json" },
   })
-    .then(res => res.json())
+    .then((res) => res.json())
     .then((response) => {
       units.value = response;
     })
     .catch((error) => {
       console.error(error);
     });
-}
+};
 
 // Function to fetch calls from the API
 const getCalls = () => {
-  fetch(url + 'api/calls', {
-    headers: { 'Content-type': 'application/json' },
+  fetch(url + "api/calls", {
+    headers: { "Content-type": "application/json" },
   })
-    .then(res => res.json())
+    .then((res) => res.json())
     .then((response) => {
       calls.value = response;
     })
     .catch((error) => {
       console.error(error);
     });
-}
+};
 
 // Function to update the assigned unit for a call
 const updateAssignedUnit = (callID, unitID) => {
   fetch(url + `api/calls/unit`, {
-    method: 'PUT',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify({ callID: callID, unitID: unitID })
+    method: "PUT",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify({ callID: callID, unitID: unitID }),
   })
-    .then(res => {
+    .then((res) => {
       if (res.ok) {
-        console.log('Assigned unit updated successfully');
+        console.log("Assigned unit updated successfully");
         toast("Updated Unit!", {
-          "theme": "colored",
-          "type": "success",
-          "autoClose": 5000,
-          "dangerouslyHTMLString": true
-        })
+          theme: "colored",
+          type: "success",
+          autoClose: 5000,
+          dangerouslyHTMLString: true,
+        });
         // Reload both tables data from the API
         getCalls();
         getUnits();
       } else {
         toast("Failed to update unit.", {
-          "theme": "colored",
-          "type": "warning",
-          "autoClose": 5000,
-          "dangerouslyHTMLString": true
-        })
-        throw new Error('Failed to update assigned unit');
+          theme: "colored",
+          type: "warning",
+          autoClose: 5000,
+          dangerouslyHTMLString: true,
+        });
+        throw new Error("Failed to update assigned unit");
       }
     })
     .catch((error) => {
-      console.error('Error updating assigned unit:', error);
+      console.error("Error updating assigned unit:", error);
     });
-}
+};
 
 // Function to close the call
 const closeCall = (callID, status) => {
+  console.log(callID)
   // Check if the call is already closed or has a "Closed" status
-  if (status === 'Closed') {
-    console.log('Call is already closed');
+  if (status === "Closed") {
+    console.log("Call is already closed");
     return; // Exit the function early if the call is already closed
   }
 
   // Make API call to close the call
   fetch(url + `api/calls/close`, {
-    method: 'PUT',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify({ callID: callID })
+    method: "PUT",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify({ callID: callID }),
   })
-    .then(res => {
+    .then((res) => {
       if (res.ok) {
-        console.log('Call closed successfully');
+        console.log("Call closed successfully");
         toast("Call closed successfully!", {
-          "theme": "colored",
-          "type": "success",
-          "autoClose": 5000,
-          "dangerouslyHTMLString": true
-        })
+          theme: "colored",
+          type: "success",
+          autoClose: 5000,
+          dangerouslyHTMLString: true,
+        });
 
         // Reload both tables data from the API
         getCalls();
         getUnits();
       } else {
         toast("Failed to close call.", {
-          "theme": "colored",
-          "type": "warning",
-          "autoClose": 5000,
-          "dangerouslyHTMLString": true
-        })
-        throw new Error('Failed to close the call');
+          theme: "colored",
+          type: "warning",
+          autoClose: 5000,
+          dangerouslyHTMLString: true,
+        });
+        throw new Error("Failed to close the call");
       }
     })
     .catch((error) => {
-      console.error('Error closing the call:', error);
+      console.error("Error closing the call:", error);
     });
-}
+};
 
 // Function to change unit status
 const setStatus = (unitID, status) => {
-  if (status === 'OOS') {
+  if (status === "OOS") {
     fetch(url + `api/units/BIS`, {
-      method: 'PUT',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ unitID: unitID })
+      method: "PUT",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ unitID: unitID }),
     })
-      .then(res => {
+      .then((res) => {
         if (res.ok) {
-          console.log('Unit statused successfully');
+          console.log("Unit statused successfully");
           toast("Unit statused successfully!", {
-            "theme": "colored",
-            "type": "success",
-            "autoClose": 5000,
-            "dangerouslyHTMLString": true
-          })
+            theme: "colored",
+            type: "success",
+            autoClose: 5000,
+            dangerouslyHTMLString: true,
+          });
 
           // Reload both tables data from the API
           getCalls();
           getUnits();
         } else {
           toast("Failed to status unit.", {
-            "theme": "colored",
-            "type": "warning",
-            "autoClose": 5000,
-            "dangerouslyHTMLString": true
-          })
-          throw new Error('Failed to status unit');
+            theme: "colored",
+            type: "warning",
+            autoClose: 5000,
+            dangerouslyHTMLString: true,
+          });
+          throw new Error("Failed to status unit");
         }
       })
       .catch((error) => {
-        console.error('Error statusing unit:', error);
+        console.error("Error statusing unit:", error);
       });
   }
   // If unit status is NOT OOS
   else {
     fetch(url + `api/units/OOS`, {
-      method: 'PUT',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ unitID: unitID })
+      method: "PUT",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ unitID: unitID }),
     })
-      .then(res => {
+      .then((res) => {
         if (res.ok) {
-          console.log('Unit statused successfully');
+          console.log("Unit statused successfully");
           toast("Unit statused successfully!", {
-            "theme": "colored",
-            "type": "success",
-            "autoClose": 5000,
-            "dangerouslyHTMLString": true
-          })
+            theme: "colored",
+            type: "success",
+            autoClose: 5000,
+            dangerouslyHTMLString: true,
+          });
           getCalls();
           getUnits();
         } else {
           toast("Failed to status unit.", {
-            "theme": "colored",
-            "type": "warning",
-            "autoClose": 5000,
-            "dangerouslyHTMLString": true
-          })
-          throw new Error('Failed to status unit');
+            theme: "colored",
+            type: "warning",
+            autoClose: 5000,
+            dangerouslyHTMLString: true,
+          });
+          throw new Error("Failed to status unit");
         }
       })
       .catch((error) => {
-        console.error('Error statusing unit:', error);
+        console.error("Error statusing unit:", error);
       });
   }
-}
-
-// Function to submit unit form
-const submit = (name, number) => {
-  // Validation
-  const validationError = validateForm(name, number);
-  if (validationError) {
-    toast(validationError, {
-      "theme": "colored",
-      "type": "warning",
-      "autoClose": 5000,
-      "dangerouslyHTMLString": true
-    })
-    return;
-  }
-
-  const formData = {
-    name: name.trim(),
-    contact: number.replace(/\D/g, ''),
-  };
-
-  fetch(url + 'api/units', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  })
-    .then(response => {
-      if (response.ok) {
-        toast("Unit Added Successfully!", {
-          "theme": "colored",
-          "type": "success",
-          "autoClose": 5000,
-          "dangerouslyHTMLString": true
-        })
-        clearForm();
-        getUnits(); // Re-query units data
-        getCalls(); // Re-query calls data
-      } else {
-        toast("Failed to add unit.", {
-          "theme": "colored",
-          "type": "warning",
-          "autoClose": 5000,
-          "dangerouslyHTMLString": true
-        })
-      }
-    })
-    .catch(error => {
-      console.error('Error adding unit:', error);
-      toast("Failed to add unit: " + error, {
-        "theme": "colored",
-        "type": "warning",
-        "autoClose": 5000,
-        "dangerouslyHTMLString": true
-      })
-    });
-};
-
-// Function to validate unit form
-const validateForm = (name, number) => {
-  if (name.length === 0 || name.length > 100) {
-    return 'Unit Identifier must be between 1 and 100 characters.';
-  }
-
-  if (number.replace(/\D/g, '').length !== 10) {
-    return 'Phone number must be 10 digits.';
-  }
-
-  return null; // No validation errors
-};
-
-// Function to clear unit form
-const clearForm = () => {
-  name.value = '';
-  number.value = '';
-};
-
-// Function to format phone number input
-const formatPhoneNumber = () => {
-  let phoneNumber = number.value.replace(/\D/g, '');
-  if (phoneNumber.length <= 10) {
-    phoneNumber = phoneNumber.replace(/^(\d{3})(\d{0,3})(\d{0,4}).*/, '($1) $2-$3');
-  } else {
-    phoneNumber = phoneNumber.slice(0, 10);
-    phoneNumber = phoneNumber.replace(/^(\d{3})(\d{3})(\d{0,4}).*/, '($1) $2-$3');
-  }
-  number.value = phoneNumber;
 };
 
 const displayPhoneFormat = (number) => {
-  let phoneNumber = number.replace(/\D/g, '');
+  let phoneNumber = number.replace(/\D/g, "");
   if (phoneNumber.length <= 10) {
-    phoneNumber = phoneNumber.replace(/^(\d{3})(\d{0,3})(\d{0,4}).*/, '($1) $2-$3');
+    phoneNumber = phoneNumber.replace(
+      /^(\d{3})(\d{0,3})(\d{0,4}).*/,
+      "($1) $2-$3"
+    );
   } else {
     phoneNumber = phoneNumber.slice(0, 10);
-    phoneNumber = phoneNumber.replace(/^(\d{3})(\d{3})(\d{0,4}).*/, '($1) $2-$3');
+    phoneNumber = phoneNumber.replace(
+      /^(\d{3})(\d{3})(\d{0,4}).*/,
+      "($1) $2-$3"
+    );
   }
-  return (phoneNumber);
+  return phoneNumber;
 };
 
 // Call Sorting
 const unassignedCalls = computed(() => {
-  return calls.value.filter(call => call.status === 'Unassigned').sort((a, b) => a.callID - b.callID);
+  return calls.value
+    .filter((call) => call.status === "Unassigned")
+    .sort((a, b) => a.callID - b.callID);
 });
 const inProgressCalls = computed(() => {
-  return calls.value.filter(call => call.status === 'In-Progress').sort((a, b) => a.callID - b.callID);
+  return calls.value
+    .filter((call) => call.status === "In-Progress")
+    .sort((a, b) => a.callID - b.callID);
 });
 const closedCalls = computed(() => {
-  return calls.value.filter(call => call.status === 'Closed').sort((a, b) => a.callID - b.callID);
+  return calls.value
+    .filter((call) => call.status === "Closed")
+    .sort((a, b) => a.callID - b.callID);
 });
 
 // Unit Sorting
 const unassignedUnits = computed(() => {
-  return units.value.filter(unit => unit.status === 'Unassigned' | unit.status === 'Free').sort((a, b) => a.unitID - b.unitID);
+  return units.value
+    .filter((unit) => (unit.status === "Unassigned") | (unit.status === "Free"))
+    .sort((a, b) => a.unitID - b.unitID);
 });
 const inProgressUnits = computed(() => {
-  return units.value.filter(unit => unit.status === 'Busy').sort((a, b) => a.unitID - b.unitID);
+  return units.value
+    .filter((unit) => unit.status === "Busy")
+    .sort((a, b) => a.unitID - b.unitID);
 });
 const oosUnits = computed(() => {
-  return units.value.filter(unit => unit.status === 'OOS').sort((a, b) => a.unitID - b.unitID);
+  return units.value
+    .filter((unit) => unit.status === "OOS")
+    .sort((a, b) => a.unitID - b.unitID);
 });
 
 const getRowClass = (status) => {
-  if (status === 'Unassigned' | status === 'OOS') {
-    return 'unassigned-row';
-  } else if (status === 'In-Progress' | status === 'Busy') {
-    return 'in-progress-row';
-  } else if (status === 'Closed' | status === 'Free') {
-    return 'closed-row';
+  if ((status === "Unassigned") | (status === "OOS")) {
+    return "unassigned-row";
+  } else if ((status === "In-Progress") | (status === "Busy")) {
+    return "in-progress-row";
+  } else if ((status === "Closed") | (status === "Free")) {
+    return "closed-row";
   } else {
-    return '';
+    return "";
   }
 };
 
@@ -597,4 +609,13 @@ onMounted(() => {
   getUnits();
   getCalls();
 });
+
+const providedFunctions = {
+  displayPhoneFormat,
+  closeCall,
+  getUnits,
+  getCalls
+};
+
+provide('providedFunctions', providedFunctions);
 </script>
