@@ -191,13 +191,13 @@
   </div>
 
   <div class="modal">
-    <modal-component
+    <detail-modal
       :isOpen="isModalOpened"
       :currentCall="currentCall"
       @modal-close="closeModal"
       name="Detail Modal"
     >
-    </modal-component>
+  </detail-modal>
 
     <unit-modal
       :isOpen="isUnitModalOpened"
@@ -341,8 +341,8 @@ tr {
 <script setup>
 import { ref, onMounted, computed, provide } from "vue";
 import { toast } from "vue3-toastify";
-import ModalComponent from "./ModalComponent.vue";
-import UnitModal from "./UnitModal.vue";
+import DetailModal from "../modals/DetailModal.vue";
+import UnitModal from "../modals/UnitModal.vue";
 import "vue3-toastify/dist/index.css";
 
 const units = ref([]);
