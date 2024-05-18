@@ -55,7 +55,7 @@ input {
     color: black;
     padding: 10px 10px;
     font-size: 16px;
-    cursor: pointer;
+    cursor: text;
 }
 
 textarea {
@@ -67,7 +67,7 @@ textarea {
     color: black;
     padding: 10px 10px;
     font-size: 16px;
-    cursor: pointer;
+    cursor: text;
 }
 
 .submit {
