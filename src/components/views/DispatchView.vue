@@ -1,4 +1,129 @@
 <template>
+  <div class="container-fluid px-4 py-3">
+    <div class="row gx-4">
+      <div class="col-8">
+        <h4 class="py-3 border-bottom">Call log</h4>
+        <table class="table table-hover mt-4">
+          <thead>
+            <th scope="col">Location</th>
+            <th scope="col">Complaint</th>
+            <th scope="col">Time Received</th>
+            <!-- <th scope="col">Rider/Bib</th> -->
+            <th scope="col">Status</th>
+            <th scope="col">Assigned Unit</th>
+            <th scope="col">Details</th>
+          </thead>
+          <tbody>
+
+            <tr
+              v-for="call in unassignedCalls"
+              :key="call.callID"
+              :class="getRowClass(call.status)"
+            >
+              <td>{{ truncateText(call.location) }}</td>
+              <td>{{ truncateText(call.complaint) }}</td>
+              <td>{{ call.open_time }}</td>
+              <td>
+                <select class="form-select form-select-sm"
+                  v-model="call.unit"
+                  @change="updateAssignedUnit(call.callID, call.unit)"
+                  :disabled="call.status === 'Closed'"
+                >
+                  <option
+                    v-for="unit in units"
+                    :key="unit.unitID"
+                    :value="unit.unitID"
+                    :selected="unit.unitID === call.unit"
+                  >
+                    {{ unit.name }}
+                  </option>
+                </select>
+              </td>
+              <td>{{ call.status }}</td>
+              <td>
+                <button @click="openModal(call.callID)" class="btn btn-sm btn-light">
+                  Show Details
+                </button>
+              </td>
+            </tr>
+
+            <tr
+              v-for="call in inProgressCalls"
+              :key="call.callID"
+              :class="getRowClass(call.status)"
+            >
+              <td>{{ truncateText(call.location) }}</td>
+              <td>{{ truncateText(call.complaint) }}</td>
+              <td>{{ call.open_time }}</td>
+              <td>
+                <select class="form-select form-select-sm"
+                  v-model="call.unit"
+                  @change="updateAssignedUnit(call.callID, call.unit)"
+                  :disabled="call.status === 'Closed'"
+                >
+                  <option
+                    v-for="unit in units"
+                    :key="unit.unitID"
+                    :value="unit.unitID"
+                    :selected="unit.unitID === call.unit"
+                  >
+                    {{ unit.name }}
+                  </option>
+                </select>
+              </td>
+              <td>{{ call.status }}</td>
+              <td>
+                <button @click="openModal(call.callID)" class="btn btn-sm btn-light">
+                  Show Details
+                </button>
+              </td>
+            </tr>
+
+            <tr
+              v-for="call in closedCalls"
+              :key="call.callID"
+              :class="getRowClass(call.status)"
+            >
+              <td>{{ truncateText(call.location) }}</td>
+              <td>{{ truncateText(call.complaint) }}</td>
+              <td>{{ call.open_time }}</td>
+              <td>
+                <select class="form-select form-select-sm"
+                  v-model="call.unit"
+                  @change="updateAssignedUnit(call.callID, call.unit)"
+                  :disabled="call.status === 'Closed'"
+                >
+                  <option
+                    v-for="unit in units"
+                    :key="unit.unitID"
+                    :value="unit.unitID"
+                    :selected="unit.unitID === call.unit"
+                  >
+                    {{ unit.name }}
+                  </option>
+                </select>
+              </td>
+              <td>{{ call.status }}</td>
+              <td>
+                <button @click="openModal(call.callID)" class="btn btn-sm btn-light">
+                  Show Details
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="col-4">
+
+      </div>
+    </div>
+
+  </div>
+
+
+
+
   <div class="content">
     <div class="dispatch">
       <!-- Calls -->
@@ -208,135 +333,6 @@
   </div>
 </template>
 
-<style scoped>
-.content {
-  width: 100%;
-}
-
-.modal {
-  width: 100%;
-}
-
-.dispatch {
-  display: flex;
-  justify-content: center;
-}
-
-.card {
-  border: 1px solid black;
-  padding: 10px;
-  margin: 20px;
-  text-align: center;
-}
-
-.detailsButton {
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  padding: 14px 28px;
-  font-size: 12px;
-  cursor: pointer;
-  border-color: black;
-  color: black;
-}
-.detailsButton:hover {
-  background-color: #f1c232;
-  color: black;
-}
-
-select {
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  font-size: 12px;
-  cursor: pointer;
-  border-color: black;
-  color: black;
-
-  max-width: 15ch;
-  word-wrap: break-word;
-}
-select:disabled {
-  border-color: #666;
-  color: #666;
-  background-color: white;
-  cursor: default;
-}
-
-label {
-  padding: 5px;
-  font-size: 20px;
-}
-
-button {
-  padding: 5px;
-  margin: 10px;
-}
-
-input {
-  width: 200px;
-  margin: 10px;
-
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  padding: 10px 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.submit {
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  padding: 14px 28px;
-  font-size: 16px;
-  cursor: pointer;
-  border-color: #04aa6d;
-  color: green;
-}
-.submit:hover {
-  background-color: #04aa6d;
-  color: white;
-}
-
-.unitForm {
-  display: grid;
-  width: auto;
-  justify-content: center;
-}
-
-.unassigned-row {
-  background-color: #e06666;
-}
-
-.in-progress-row {
-  background-color: #f1c232;
-}
-
-.closed-row {
-  background-color: #6aa84f;
-}
-
-table,
-th,
-td,
-tr {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 10px;
-  margin: 20px;
-  text-align: left;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 300px; /* Adjust as needed */
-
-  max-width: 20ch;
-  word-wrap: break-word;
-}
-</style>
 
 <script setup>
 import { ref, onMounted, computed, provide } from "vue";
@@ -605,11 +601,11 @@ const oosUnits = computed(() => {
 
 const getRowClass = (status) => {
   if ((status === "Unassigned") | (status === "OOS")) {
-    return "unassigned-row";
+    return "table-danger";
   } else if ((status === "In-Progress") | (status === "Busy")) {
-    return "in-progress-row";
+    return "table-warning";
   } else if ((status === "Closed") | (status === "Free")) {
-    return "closed-row";
+    return "table-success";
   } else {
     return "";
   }
