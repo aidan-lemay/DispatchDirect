@@ -45,7 +45,7 @@
                         <textarea v-model="notes" class="form-control" placeholder="Notes"></textarea>
                     </div>
                 </div>
-                <div class="col-12 d-grid mt-5">
+                <div class="col-12 d-grid mt-4">
                     <button @click="submit" class="btn btn-success">Submit</button>
                 </div>
                 
