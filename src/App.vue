@@ -1,12 +1,35 @@
 <template>
-  <div class="navbar">
+  <!-- <div class="navbar">
     <div class="callDiv">
       <button @click="navigateCalls" class="callButton">Call Form</button>
     </div>
     <div class="dispDiv">
       <button @click="navigateDispatch" class="dispatchButton">Dispatch</button>
     </div>
-  </div>
+  </div> -->
+
+  <nav class="navbar navbar-expand-lg bg-dark bg-gradient" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">DispatchDirect</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <!-- <li class="nav-item">
+            <a class="nav-link">Dashboard</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" @click="navigateDispatch">Dispatcher</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" @click="navigateCalls">Call Form</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <router-view></router-view>
 </template>
 

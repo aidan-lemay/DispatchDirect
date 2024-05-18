@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 import {createRouter, createWebHistory} from 'vue-router'
+import './scss/styles.scss'
+import * as bootstrap from 'bootstrap'
 
 import App from './App.vue'
 import CallView from './components/views/CallView.vue';

@@ -1,40 +1,69 @@
 <template>
-    <div class="content">
-        <h1>Calls</h1>
-
+    <div class="container-fluid px-5 py-3">
+        
         <div class="callForm">
-            <label for="name">Name</label>
-            <input v-model="name" placeholder="Name" />
-
-            <label for="number">Callback Number</label>
-            <input v-model="number" placeholder="(   ) ___-____" @input="formatPhoneNumber" />
-
-            <label for="bib">Riders Bib Number</label>
-            <input v-model="bib" placeholder="Bib Number" />
-
-            <label for="location">Approximate Location</label>
-            <input v-model="location" placeholder="Location" />
-
-            <label for="complaint">Complaint</label>
-            <textarea v-model="complaint" placeholder="Complaint"></textarea>
-
-            <label for="notes">Notes</label>
-            <textarea v-model="notes" placeholder="Notes"></textarea>
-
-            <button @click="submit" class="submit">Submit</button>
+            <h4 class="py-3 border-bottom">New call</h4>
+            <div class="row mt-4">
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input v-model="name" class="form-control" id="name" placeholder="Name">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="number" class="form-label">Callback Number</label>
+                        <input v-model="number" class="form-control" placeholder="(   ) ___-____" @input="formatPhoneNumber" />
+                        <div class="form-text">
+                            Must be a 10-digit phone number.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="bib" class="form-label">Riders Bib Number</label>
+                        <input v-model="bib" class="form-control" placeholder="Bib Number" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Approximate Location</label>
+                        <input v-model="location" class="form-control" placeholder="Location" />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="complaint" class="form-label">Complaint</label>
+                        <textarea v-model="complaint" class="form-control" placeholder="Complaint"></textarea>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea v-model="notes" class="form-control" placeholder="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="col-12 d-grid mt-5">
+                    <button @click="submit" class="btn btn-success">Submit</button>
+                </div>
+                
+            </div>
         </div>
+
     </div>
 </template>
 
 <style scoped>
-label {
-    padding: 5px;
-    font-size: 20px;
-}
 
-button {
+/* button {
     padding: 5px;
     margin: 10px;
+} */
+
+label {
+    font-weight: 700;
 }
 
 .content {
@@ -46,51 +75,12 @@ button {
     text-align: center;
 }
 
-input {
-    width: 200px;
-    margin: 10px;
-
-    border: 2px solid black;
-    background-color: white;
-    color: black;
-    padding: 10px 10px;
-    font-size: 16px;
-    cursor: text;
-}
-
-textarea {
-    width: 200px;
-    margin: 10px;
-
-    border: 2px solid black;
-    background-color: white;
-    color: black;
-    padding: 10px 10px;
-    font-size: 16px;
-    cursor: text;
-}
-
-.submit {
-    border: 2px solid black;
-    background-color: white;
-    color: black;
-    padding: 14px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    border-color: #04AA6D;
-    color: green;
-}
-
-.submit:hover {
-    background-color: #04AA6D;
-    color: white;
-}
-
 .callForm {
     display: grid;
     width: auto;
     justify-content: center;
 }
+
 </style>
 
 <script setup>
@@ -170,6 +160,7 @@ const submit = () => {
 const validateForm = () => {
     if (name.value.length === 0 || name.value.length > 100) {
         return 'Name must be between 1 and 100 characters.';
+        name.is-invalid === true;
     }
 
     if (number.value.replace(/\D/g, '').length !== 10) {
