@@ -97,21 +97,29 @@ const clearForm = () => {
 };
 
 // Function to format phone number input
-const formatPhoneNumber = () => {
-  let phoneNumber = number.value.replace(/\D/g, "");
-  if (phoneNumber.length <= 10) {
-    phoneNumber = phoneNumber.replace(
-      /^(\d{3})(\d{0,3})(\d{0,4}).*/,
-      "($1) $2-$3"
-    );
-  } else {
-    phoneNumber = phoneNumber.slice(0, 10);
-    phoneNumber = phoneNumber.replace(
-      /^(\d{3})(\d{3})(\d{0,4}).*/,
-      "($1) $2-$3"
-    );
-  }
-  number.value = phoneNumber;
+const formatPhoneNumber = (event) => {
+    const input = event.target;
+    let value = input.value.replace(/\D/g, '');
+
+    const isDeleting = (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward');
+
+    if (!isDeleting) {
+        if (value.length > 3 && value.length <= 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+        } else if (value.length > 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        }
+    } else {
+        if (value.length <= 3) {
+            value = `(${value}`;
+        } else if (value.length > 3 && value.length <= 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+        } else if (value.length > 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        }
+    }
+
+    number.value = value;
 };
 </script>
 
