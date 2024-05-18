@@ -160,7 +160,6 @@ const submit = () => {
 const validateForm = () => {
     if (name.value.length === 0 || name.value.length > 100) {
         return 'Name must be between 1 and 100 characters.';
-        name.is-invalid === true;
     }
 
     if (number.value.replace(/\D/g, '').length !== 10) {
