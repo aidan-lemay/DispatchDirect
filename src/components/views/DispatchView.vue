@@ -115,141 +115,15 @@
         </table>
       </div>
       <div class="col-4">
-
-      </div>
-    </div>
-
-  </div>
-
-
-
-
-  <div class="content">
-    <div class="dispatch">
-      <!-- Calls -->
-      <div class="card">
-        <h2>Call Dispatch</h2>
-        <div class="card-body">
-          <table>
-            <tr>
-              <th>Location of Call</th>
-              <th>Complaint</th>
-              <th>Call Open</th>
-              <th>Assigned Unit</th>
-              <th>Call Status</th>
-              <th>Details</th>
-            </tr>
-
-            <tr
-              v-for="call in unassignedCalls"
-              :key="call.callID"
-              :class="getRowClass(call.status)"
-            >
-              <td>{{ truncateText(call.location) }}</td>
-              <td>{{ truncateText(call.complaint) }}</td>
-              <td>{{ call.open_time }}</td>
-              <td>
-                <select
-                  v-model="call.unit"
-                  @change="updateAssignedUnit(call.callID, call.unit)"
-                  :disabled="call.status === 'Closed'"
-                >
-                  <option
-                    v-for="unit in units"
-                    :key="unit.unitID"
-                    :value="unit.unitID"
-                    :selected="unit.unitID === call.unit"
-                  >
-                    {{ unit.name }}
-                  </option>
-                </select>
-              </td>
-              <td>{{ call.status }}</td>
-              <td>
-                <button @click="openModal(call.callID)" class="detailsButton">
-                  Show Details
-                </button>
-              </td>
-            </tr>
-
-            <tr
-              v-for="call in inProgressCalls"
-              :key="call.callID"
-              :class="getRowClass(call.status)"
-            >
-              <td>{{ truncateText(call.location) }}</td>
-              <td>{{ truncateText(call.complaint) }}</td>
-              <td>{{ call.open_time }}</td>
-              <td>
-                <select
-                  v-model="call.unit"
-                  @change="updateAssignedUnit(call.callID, call.unit)"
-                  :disabled="call.status === 'Closed'"
-                >
-                  <option
-                    v-for="unit in units"
-                    :key="unit.unitID"
-                    :value="unit.unitID"
-                    :selected="unit.unitID === call.unit"
-                  >
-                    {{ unit.name }}
-                  </option>
-                </select>
-              </td>
-              <td>{{ call.status }}</td>
-              <td>
-                <button @click="openModal(call.callID)" class="detailsButton">
-                  Show Details
-                </button>
-              </td>
-            </tr>
-
-            <tr
-              v-for="call in closedCalls"
-              :key="call.callID"
-              :class="getRowClass(call.status)"
-            >
-              <td>{{ truncateText(call.location) }}</td>
-              <td>{{ truncateText(call.complaint) }}</td>
-              <td>{{ call.open_time }}</td>
-              <td>
-                <select
-                  v-model="call.unit"
-                  @change="updateAssignedUnit(call.callID, call.unit)"
-                  :disabled="call.status === 'Closed'"
-                >
-                  <option
-                    v-for="unit in units"
-                    :key="unit.unitID"
-                    :value="unit.unitID"
-                    :selected="unit.unitID === call.unit"
-                  >
-                    {{ unit.name }}
-                  </option>
-                </select>
-              </td>
-              <td>{{ call.status }}</td>
-              <td>
-                <button @click="openModal(call.callID)" class="detailsButton">
-                  Show Details
-                </button>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-
-      <!-- Units -->
-      <div class="card">
-        <h2>Units</h2>
-        <div class="card-body">
-          <table>
-            <tr>
-              <th>Identifier</th>
-              <th>Phone Number</th>
-              <th>Current Status</th>
-              <th>Out Of Service</th>
-            </tr>
+        <h4 class="py-3 border-bottom">Units</h4>
+        <table class="table table-hover mt-4">
+          <thead>
+            <th scope="col">Identifier</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Status</th>
+            <th scope="col">Out of Service</th>
+          </thead>
+          <tbody>
             <tr
               v-for="unit in unassignedUnits"
               :key="unit.unitID"
@@ -262,7 +136,7 @@
                 <button
                   @click="setStatus(unit.unitID, unit.status)"
                   :disabled="unit.status === 'Busy'"
-                  class="detailsButton"
+                  class="btn btn-sm btn-light"
                 >
                   {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
@@ -281,7 +155,7 @@
                 <button
                   @click="setStatus(unit.unitID, unit.status)"
                   :disabled="unit.status === 'Busy'"
-                  class="detailsButton"
+                  class="btn btn-sm btn-light"
                 >
                   {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
@@ -300,22 +174,62 @@
                 <button
                   @click="setStatus(unit.unitID, unit.status)"
                   :disabled="unit.status === 'Busy'"
-                  class="detailsButton"
+                  class="btn btn-sm btn-light"
                 >
                   {{ unit.status === "Free" ? "Set Unit OOS" : "Set Unit BIS" }}
                 </button>
               </td>
             </tr>
-          </table>
+          </tbody>
+        </table>
+
+        <div class="text-center mt-4">
+          <button @click="openUnitModal()" class="btn btn-success">Add Unit</button>
         </div>
-        <div class="card-footer">
-          <button @click="openUnitModal()" class="submit">Add Unit</button>
-        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="modal">
+<detail-modal
+    :isOpen="isModalOpened"
+    :currentCall="currentCall"
+    @modal-close="closeModal"
+    name="Detail Modal"
+  >
+</detail-modal>
+
+<unit-modal
+      :isOpen="isUnitModalOpened"
+      @modal-close="closeUnitModal"
+      name="Unit Modal"
+    >
+    </unit-modal>
+
+
+
+
+  <!-- <div class="modal">
     <detail-modal
       :isOpen="isModalOpened"
       :currentCall="currentCall"
@@ -330,7 +244,7 @@
       name="Unit Modal"
     >
     </unit-modal>
-  </div>
+  </div> -->
 </template>
 
 
@@ -351,6 +265,8 @@ const openModal = (callID) => {
   isModalOpened.value = true;
   currentCall.value = calls.value.filter((call) => call.callID === callID);
 };
+
+
 const closeModal = () => {
   isModalOpened.value = false;
 };
