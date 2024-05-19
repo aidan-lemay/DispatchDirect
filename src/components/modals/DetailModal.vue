@@ -23,16 +23,65 @@ const call = computed(() => props.currentCall[0]);
 
       <div class="modal-header">
         <div class="header">
-          <h2 class="content">Call Details for Run Number: {{ call.callID }}</h2>
+          <h4 class="content">Call details - Run number: {{ call.callID }}</h4>
         </div>
 
         <div class="btnRight">
-          <button @click="emit('modal-close')" class="close-btn">X</button>
+          <button @click="emit('modal-close')" type="button" class="btn-close mb-3" aria-label="Close"></button>
         </div>
       </div>
 
       <div class="modal-body">
-        <div class="content"><span class="heading">Caller Name: </span>{{ call.name }}</div>
+
+        <h5 class="py-3 border-bottom">Caller information</h5>
+        <div class="row mb-2">
+          <div class="col-auto">
+            <span class="heading">Caller name: </span>{{ call.name }}
+          </div>
+          <div class="col-auto">
+            <span class="heading">Callback number: </span>{{ displayPhoneFormat(call.phone) }}
+          </div>
+          <div class="col-auto">
+            <span class="heading">Bib number: </span>{{ call.bib }}
+          </div>
+        </div>
+
+        <h5 class="py-3 border-bottom">Call details</h5>
+        <div class="row">
+          <div class="col-auto">
+            <span class="heading">Status: </span>{{ call.status }}
+          </div>
+          <div class="col-auto">
+            <span class="heading">Time opened: </span>{{ call.open_time }}
+          </div>
+          <div class="col-auto">
+            <span class="heading">Time closed: </span>{{ call.close_time }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <span class="heading">Location: </span>{{ call.location }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <span class="heading">Complaint: </span><br>{{ call.complaint }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <span class="heading">Notes: </span><br>{{ call.notes }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-auto">
+            <span class="heading">Assigned unit: </span>{{ call.unit }}
+          </div>
+        </div>
+
+
+
+        <!-- <div class="content"><span class="heading">Caller Name: </span>{{ call.name }}</div>
         <div class="content"><span class="heading">Callback Number: </span>{{ displayPhoneFormat(call.phone) }}</div>
         <div class="content"><span class="heading">Rider Bib Number: </span>{{ call.bib }}</div>
         <div class="content"><span class="heading">Call Location: </span>{{ call.location }}</div>
@@ -41,11 +90,11 @@ const call = computed(() => props.currentCall[0]);
         <div class="content"><span class="heading">Call Closed At: </span>{{ call.close_time }}</div>
         <div class="content"><span class="heading">Unit Assigned: </span>{{ call.unit }}</div>
         <div class="content"><span class="heading">Call Status: </span>{{ call.status }}</div>
-        <div class="content"><span class="heading">Call Notes: </span>{{ call.notes }}</div>
+        <div class="content"><span class="heading">Call Notes: </span>{{ call.notes }}</div> -->
       </div>
 
-      <div class="modal-footer">
-        <button @click="closeCall(call.callID, call.status), emit('modal-close')" class="closeCallBtn" :disabled="call.status == 'Closed'">Close Call</button>
+      <div class="modal-footer mt-4">
+        <button @click="closeCall(call.callID, call.status), emit('modal-close')" class="btn btn-danger" :disabled="call.status == 'Closed'">Close Call</button>
       </div>
 
     </div>
@@ -64,11 +113,11 @@ const call = computed(() => props.currentCall[0]);
 }
 
 .modal-container {
-  width: 75%;
+  width: 50%;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  padding: 20px;
+  padding: 2rem;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -90,6 +139,7 @@ const call = computed(() => props.currentCall[0]);
 .header {
   flex: 1;
   text-align: center;
+  font-weight: 700;
 }
 
 .btnRight {
@@ -122,7 +172,7 @@ const call = computed(() => props.currentCall[0]);
 
 .content {
   word-wrap: break-word;
-  margin: 5px 0;
+  /* margin: 5px 0; */
   max-width: 100%; /* Ensuring content doesn't exceed the modal width */
 }
 
@@ -133,7 +183,7 @@ const call = computed(() => props.currentCall[0]);
 .modal-footer {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .closeCallBtn {
