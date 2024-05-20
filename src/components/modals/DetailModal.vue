@@ -41,7 +41,7 @@ const closeNotesModal = () => {
         <div class="content"><span class="heading">Caller Complaint: </span>{{ call.complaint }}</div>
         <div class="content"><span class="heading">Call Opened At: </span>{{ call.open_time }}</div>
         <div class="content"><span class="heading">Call Closed At: </span>{{ call.close_time }}</div>
-        <div class="content"><span class="heading">Unit Assigned: </span>{{ call.unit }}</div>
+        <div class="content"><span class="heading">Unit Assigned: </span>{{ call.unitName }}</div>
         <div class="content"><span class="heading">Call Status: </span>{{ call.status }}</div>
         <div class="content"><span class="heading">Call Notes: </span>
           <div v-if="call.notes">
