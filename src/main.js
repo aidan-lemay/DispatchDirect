@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 import App from './App.vue'
 import CallView from './components/views/CallView.vue';
@@ -9,7 +9,7 @@ import UnitView from './components/views/UnitView.vue';
 
 const router = createRouter({
     history: createWebHistory(),
-    routes:[
+    routes: [
         { path: '/', component: CallView },
         { path: '/calls', component: CallView },
         { path: '/dispatch', component: DispatchView },
