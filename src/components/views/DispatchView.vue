@@ -644,7 +644,7 @@ input {
   background-color: #6aa84f;
 }
 
-table,
+/* table,
 th,
 td,
 tr {
@@ -657,9 +657,39 @@ tr {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 300px; /* Adjust as needed */
+  max-width: 300px;
 
   max-width: 20ch;
   word-wrap: break-word;
+} */
+
+table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
+
+table,
+thead,
+tr {
+  background-color: #009879;
+  color: #000000;
+  text-align: left;
+}
+
+table,
+th,
+td {
+  padding: 12px 15px;
+}
+
+table,
+tbody,
+tr {
+  border-bottom: 1px solid #dddddd;
+}
+
 </style>
