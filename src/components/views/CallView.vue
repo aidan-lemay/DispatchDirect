@@ -38,6 +38,7 @@ button {
 }
 
 .content {
+
   display: grid;
   justify-content: center;
   border: 1px solid black;
@@ -68,6 +69,7 @@ textarea {
   padding: 10px 10px;
   font-size: 16px;
   cursor: pointer;
+
 }
 
 .submit {
@@ -105,45 +107,66 @@ const location = ref("");
 const complaint = ref("");
 const notes = ref("");
 
-const url = "http://localhost:3007/";
-// const url = 'https://dispatchapi.k5doc.tech/';
+
+const url = ref(import.meta.env.VITE_URL);
 
 const submit = () => {
-  const validationError = validateForm();
-  if (validationError) {
-    toast(validationError, {
-      theme: "colored",
-      type: "warning",
-      autoClose: 5000,
-      dangerouslyHTMLString: true,
-    });
-    console.error(validationError);
-    return;
-  }
 
-  const formData = {
-    name: name.value.trim(),
-    phone: number.value.replace(/\D/g, ""),
-    bib: bib.value.trim(),
-    location: location.value.trim(),
-    complaint: complaint.value.trim(),
-    notes: notes.value.trim(),
-  };
+    const validationError = validateForm();
+    if (validationError) {
+        toast(validationError, {
+            "theme": "colored",
+            "type": "warning",
+            "autoClose": 5000,
+            "dangerouslyHTMLString": true
+        })
+        console.error(validationError);
+        return;
+    }
 
-  fetch(url + "api/calls", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  })
-    .then((response) => {
-      if (response.ok) {
-        toast("Call Submitted Successfully!", {
-          theme: "colored",
-          type: "success",
-          autoClose: 5000,
-          dangerouslyHTMLString: true,
+    const formData = {
+        name: name.value.trim(),
+        phone: number.value.replace(/\D/g, ''),
+        bib: bib.value.trim(),
+        location: location.value.trim(),
+        complaint: complaint.value.trim(),
+        notes: notes.value.trim()
+    };
+
+    fetch(url.value + 'api/calls', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(response => {
+            if (response.ok) {
+                toast("Call Submitted Successfully!", {
+                    "theme": "colored",
+                    "type": "success",
+                    "autoClose": 5000,
+                    "dangerouslyHTMLString": true
+                })
+                clearForm();
+            } else {
+                toast("Failed to submit call.", {
+                    "theme": "colored",
+                    "type": "warning",
+                    "autoClose": 5000,
+                    "dangerouslyHTMLString": true
+                })
+                console.error("Failed to submit call");
+            }
+        })
+        .catch(error => {
+            toast(error, {
+                "theme": "colored",
+                "type": "warning",
+                "autoClose": 5000,
+                "dangerouslyHTMLString": true
+            })
+            console.error(error);
         });
         clearForm();
       } else {
@@ -200,14 +223,28 @@ const clearForm = () => {
   notes.value = "";
 };
 
-const formatPhoneNumber = () => {
-  let phoneNumber = number.value.replace(/\D/g, "");
-  if (phoneNumber.length <= 10) {
-    phoneNumber = phoneNumber.replace(/^(\d{3})(\d{0,3})(\d{0,4}).*/, "($1) $2-$3");
-  } else {
-    phoneNumber = phoneNumber.slice(0, 10);
-    phoneNumber = phoneNumber.replace(/^(\d{3})(\d{3})(\d{0,4}).*/, "($1) $2-$3");
-  }
-  number.value = phoneNumber;
+const formatPhoneNumber = (event) => {
+    const input = event.target;
+    let value = input.value.replace(/\D/g, '');
+
+    const isDeleting = (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward');
+
+    if (!isDeleting) {
+        if (value.length > 3 && value.length <= 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+        } else if (value.length > 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        }
+    } else {
+        if (value.length <= 3) {
+            value = `(${value}`;
+        } else if (value.length > 3 && value.length <= 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+        } else if (value.length > 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        }
+    }
+
+    number.value = value;
 };
 </script>
