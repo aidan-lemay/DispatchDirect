@@ -644,25 +644,6 @@ input {
   background-color: #6aa84f;
 }
 
-/* table,
-th,
-td,
-tr {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 10px;
-  margin: 20px;
-  text-align: left;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 300px;
-
-  max-width: 20ch;
-  word-wrap: break-word;
-} */
-
 table {
   border-collapse: collapse;
   margin: 25px 0;
