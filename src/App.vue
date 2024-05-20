@@ -15,6 +15,8 @@
     <div class="menu-items">
       <button @click="navigateCalls" class="menuButton">Call Form</button>
       <button @click="navigateDispatch" class="menuButton">Dispatch</button>
+      <button @click="navigateUnit" class="menuButton">Unit Info</button>
+      <button @click="navigateDashboard" class="menuButton">Dashboard Display</button>
     </div>
   </div>
   <router-view></router-view>
@@ -38,6 +40,14 @@ export default {
     },
     navigateCalls() {
       this.$router.push("/calls");
+      this.menuOpen = false;
+    },
+    navigateDashboard() {
+      this.$router.push("/dashboard");
+      this.menuOpen = false;
+    },
+    navigateUnit() {
+      this.$router.push("/unit");
       this.menuOpen = false;
     },
   },
