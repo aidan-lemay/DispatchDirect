@@ -1,10 +1,20 @@
 <template>
   <div class="navbar">
-    <div class="callDiv">
-      <button @click="navigateCalls" class="callButton">Call Form</button>
+    <div class="hamburger" @click="toggleMenu">
+      <span :class="{'open': menuOpen}"></span>
+      <span :class="{'open': menuOpen}"></span>
+      <span :class="{'open': menuOpen}"></span>
     </div>
-    <div class="dispDiv">
-      <button @click="navigateDispatch" class="dispatchButton">Dispatch</button>
+
+    <div class="heading">
+      <h1>DispatchDirect</h1>
+    </div>
+  </div>
+  <div class="overlay" :class="{'active': menuOpen}" @click="toggleMenu"></div>
+  <div class="menu" :class="{'open': menuOpen}">
+    <div class="menu-items">
+      <button @click="navigateCalls" class="menuButton">Call Form</button>
+      <button @click="navigateDispatch" class="menuButton">Dispatch</button>
     </div>
   </div>
   <router-view></router-view>
@@ -13,65 +23,130 @@
 <script>
 export default {
   name: "UnitComponent",
+  data() {
+    return {
+      menuOpen: false,
+    };
+  },
   methods: {
+    toggleMenu() {
+      this.menuOpen = !this.menuOpen;
+    },
     navigateDispatch() {
       this.$router.push("/dispatch");
+      this.menuOpen = false;
     },
     navigateCalls() {
       this.$router.push("/calls");
+      this.menuOpen = false;
     },
   },
 };
 </script>
 
 <style scoped>
-template {
-  width: 100%;
-  height: 100%;
-  padding: 0%;
-}
-
 .navbar {
   display: flex;
+  justify-content: flex-start;
   width: 100%;
 }
 
-.callDiv,
-.dispDiv {
-  flex: 1; /* This makes each div take up half of the available width */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 10;
 }
 
-.callButton {
+.heading {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 4px;
+  background-color: black;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.hamburger span.open:nth-child(1) {
+  transform: translateY(11px) rotate(45deg);
+}
+
+.hamburger span.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger span.open:nth-child(3) {
+  transform: translateY(-11px) rotate(-45deg);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.menu {
+  position: fixed;
+  top: 0px;
+  left: -100%;
+  width: 250px;
+  height: 100%;
+  background-color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, left 0.3s ease;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.menu.open {
+  left: 0;
+}
+
+.menu-items {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  right: 20px;
+}
+
+.menuButton {
   border: 2px solid black;
   background-color: white;
   color: black;
   padding: 14px 28px;
   font-size: 20px;
   cursor: pointer;
-  border-color: #04aa6d;
-  color: green;
-  width: 100%; /* Ensure the button fills the entire div */
-  text-align: center; /* Align text to the left */
-}
-.callButton:hover {
-  background-color: #04aa6d;
-  color: white;
+  margin-bottom: 10px;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dispatchButton {
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  padding: 14px 28px;
-  font-size: 20px;
-  cursor: pointer;
-  border-color: #f44336;
-  color: #f44336;
-  width: 100%; /* Ensure the button fills the entire div */
-  text-align: center; /* Align text to the right */
-}
-.dispatchButton:hover {
-  background-color: #f44336;
+.menuButton:hover {
+  background-color: black;
   color: white;
 }
 </style>
