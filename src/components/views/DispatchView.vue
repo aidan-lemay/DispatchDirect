@@ -195,9 +195,10 @@
       :isOpen="isModalOpened"
       :currentCall="currentCall"
       @modal-close="closeModal"
+      @notes-updated="onNotesUpdated"
       name="Detail Modal"
     >
-  </detail-modal>
+    </detail-modal>
 
     <unit-modal
       :isOpen="isUnitModalOpened"
@@ -370,6 +371,18 @@ const url = ref(import.meta.env.VITE_URL);
 
 const POLLING_INTERVAL = 5000; // 5 seconds
 
+// Update DetailModal when notes are added
+const onNotesUpdated = (callID) => {
+  // Fetch the updated call data
+  getCallById(callID).then((updatedCall) => {
+    // Find the call in the calls array and update it
+    const index = calls.value.findIndex((call) => call.callID === callID);
+    if (index !== -1) {
+      calls.value[index] = updatedCall;
+    }
+  });
+};
+
 // Function to fetch units from the API
 const getUnits = () => {
   fetch(url.value + "api/units", {
@@ -393,6 +406,19 @@ const getCalls = () => {
     .then((response) => {
       calls.value = response;
     })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
+// Function to fetch a specific call by ID
+const getCallById = (callID) => {
+  return fetch(url.value + `api/calls/call`, {
+    method: "POST",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify({ callID: callID }),
+  })
+    .then((res) => res.json())
     .catch((error) => {
       console.error(error);
     });
@@ -629,12 +655,11 @@ onMounted(() => {
   getCalls();
 });
 
-const providedFunctions = {
+provide("providedFunctions", {
+  updateAssignedUnit,
   displayPhoneFormat,
   closeCall,
-  getUnits,
-  getCalls,
-};
-
-provide("providedFunctions", providedFunctions);
+  getCallById,
+  onNotesUpdated,
+});
 </script>

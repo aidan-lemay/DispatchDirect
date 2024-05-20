@@ -64,6 +64,28 @@ function unitFromCall(callID) {
     });
 }
 
+// Get Notes By CallID
+function notesFromCall(callID) {
+    return new Promise((resolve, reject) => {
+        var sql = `SELECT notes FROM calls WHERE callID = ?`;
+        db.all(sql, [callID], (err, rows) => {
+            if (err) {
+                console.error(err.message);
+                reject(err);
+            } else {
+                const notes = rows[0]['notes'];
+
+                if (notes == undefined) {
+                    resolve(0);
+                }
+                else {
+                    resolve(notes);
+                }
+            }
+        });
+    });
+}
+
 // -------------------- Route Definitions --------------------
 
 // Get Calls Aggregate
@@ -89,6 +111,41 @@ router.get('/calls', async (req, res) => {
         }
     });
 });
+
+// Get Single Call By ID
+router.post('/call', async (req, res) => {
+
+    if (req.body) {
+        var { callID } = req.body;
+
+        checkCallID(callID)
+            .then(exists => {
+                if (exists) {
+                    // Get Call
+                    db.all(`SELECT calls.callID, calls.name, phone, bib, location, complaint, open_time, close_time, calls.unit, COALESCE(units.name, 'None') AS unitName, calls.status, notes FROM calls LEFT JOIN units ON calls.unit = units.unitID WHERE callID = ? LIMIT 1`, [callID], (err, rows) => {
+                        if (err) {
+                            console.error(err.message);
+                            res.status(500).send('Internal server error');
+                        } else {
+                            res.status(200).send(rows);
+                        }
+                    });
+                }
+                else {
+                    res.status(400).send({ 'error': 'Call Does Not Exist' });
+                    res.end();
+                }
+            })
+            .catch(err => {
+                // Handle error
+                console.error("Error:", err);
+            });
+    }
+    else {
+        res.status(400).send({ 'error': 'Missing Data' });
+        res.end();
+    }
+})
 
 // Create New Call
 router.post('/', async (req, res) => {
@@ -241,6 +298,72 @@ router.put('/unit', async (req, res) => {
                                 // Handle error
                                 console.error("Error:", err);
                             });
+                    }
+                    else {
+                        res.status(400).send({ 'error': 'Call Does Not Exist' });
+                        res.end();
+                    }
+                })
+                .catch(err => {
+                    // Handle error
+                    console.error("Error:", err);
+                });
+        }
+        else {
+            res.status(400).send({ 'error': 'Missing Data' });
+            res.end();
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send({ 'error': error });
+        res.end();
+    }
+});
+
+// Add notes to a job
+router.put('/notes', async (req, res) => {
+    try {
+        if (req.body) {
+            var { callID, name, notes } = req.body;
+
+            // Check data
+            if (callID !== undefined && callID.length < 1) {
+                res.status(400).send({ 'error': 'Call ID Invalid' });
+                return;
+            }
+            if (name !== undefined && name.length < 1) {
+                res.status(400).send({ 'error': 'Name Invalid' });
+                return;
+            }
+            if (notes === undefined && notes.length > 100) {
+                res.status(400).send({ 'error': 'Notes Invalid' });
+                return;
+            }
+
+            // Check if call exists
+            checkCallID(callID)
+                .then(exists => {
+                    if (exists) {
+                        // Get existing notes from call
+                        notesFromCall(callID)
+                            .then(existingNotes => {
+                                notes = existingNotes + "<" + name + ">: " + notes + "|";
+
+                                // Update call by CallID with new notes block
+                                const sql = 'UPDATE calls SET notes = ? WHERE callID = ?';
+                                db.run(sql, [notes, callID], function (err) {
+                                    if (err) {
+                                        console.error(err.message);
+                                        res.status(500).send('Internal server error');
+                                        res.end();
+                                    } else {
+                                        const callID = this.lastID;
+                                        res.status(201).send({ callID });
+                                        res.end();
+                                    }
+                                });
+                            })
                     }
                     else {
                         res.status(400).send({ 'error': 'Call Does Not Exist' });

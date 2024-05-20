@@ -4,22 +4,22 @@
 
         <div class="callForm">
             <label for="name">Name</label>
-            <input v-model="name" placeholder="Name" />
+            <input v-model="name" placeholder="Name" maxlength="100" />
 
             <label for="number">Callback Number</label>
             <input v-model="number" placeholder="(   ) ___-____" @input="formatPhoneNumber" />
 
             <label for="bib">Riders Bib Number</label>
-            <input v-model="bib" placeholder="Bib Number" />
+            <input v-model="bib" placeholder="Bib Number" maxlength="10" />
 
             <label for="location">Approximate Location</label>
-            <input v-model="location" placeholder="Location" />
+            <input v-model="location" placeholder="Location" maxlength="100" />
 
             <label for="complaint">Complaint</label>
-            <textarea v-model="complaint" placeholder="Complaint"></textarea>
+            <textarea v-model="complaint" placeholder="Complaint" maxlength="100"></textarea>
 
             <label for="notes">Notes</label>
-            <textarea v-model="notes" placeholder="Notes"></textarea>
+            <textarea v-model="notes" placeholder="Notes" maxlength="100"></textarea>
 
             <button @click="submit" class="submit">Submit</button>
         </div>
@@ -127,7 +127,7 @@ const submit = () => {
         bib: bib.value.trim(),
         location: location.value.trim(),
         complaint: complaint.value.trim(),
-        notes: notes.value.trim()
+        notes: "<System>: " + notes.value.trim() + "|"
     };
 
     fetch(url.value + 'api/calls', {
@@ -180,12 +180,20 @@ const validateForm = () => {
         return 'Bib must be between 1 and 10 characters.';
     }
 
-    if (location.value.length === 0 || location.value.length > 200) {
-        return 'Location must be between 1 and 200 characters.';
+    if (location.value.length === 0 || location.value.length > 100) {
+        return 'Location must be between 1 and 100 characters.';
     }
 
-    if (complaint.value.length === 0 || complaint.value.length > 500) {
-        return 'Complaint must be between 1 and 500 characters.';
+    if (complaint.value.length === 0 || complaint.value.length > 100) {
+        return 'Complaint must be between 1 and 100 characters.';
+    }
+
+    if (notes.value.length > 100) {
+        return 'Note must not be more than 100 characters.';
+    }
+
+    if (notes.value.length == 0) {
+        notes.value = "No Initial Notes";
     }
 
     return null; // No validation errors

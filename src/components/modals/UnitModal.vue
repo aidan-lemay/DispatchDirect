@@ -1,6 +1,5 @@
 <script setup>
 import { ref, inject } from "vue";
-import { onClickOutside } from "@vueuse/core";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
@@ -15,9 +14,6 @@ const url = ref(import.meta.env.VITE_URL);
 
 const emit = defineEmits(["modal-close"]);
 const { getUnits, getCalls } = inject("providedFunctions");
-
-const target = ref(null);
-onClickOutside(target, () => emit("modal-close"));
 
 // Function to submit unit form
 const addUnit = (name, number) => {
@@ -124,13 +120,13 @@ const formatPhoneNumber = (event) => {
 </script>
 
 <template>
-  <div v-if="props.isOpen" class="modal-mask" ref="target">
-    <div class="modal-container" ref="target">
+  <div v-if="props.isOpen" class="modal-mask">
+    <div class="modal-container">
       <div class="modal-header">
         <div class="header-content">
           <div class="unitForm">
             <label for="name">Unit Identifier</label>
-            <input v-model="name" placeholder="Unit" />
+            <input v-model="name" placeholder="Unit" maxlength="100" />
 
             <label for="number">Contact Number</label>
             <input
