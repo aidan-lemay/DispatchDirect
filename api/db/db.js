@@ -83,9 +83,9 @@ function loadSampleData() {
     INSERT INTO units (name, status, contact) VALUES ('MARSHALL1', 'Free', '7489189489');
     INSERT INTO units (name, status, contact) VALUES ('MARSHALL2', 'Free', '7891859289');
     
-    INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES ('Joe Rider', '1234567898', '1234', '123 North 12th Street, Cross Street Wilson', 'Flat Tire', '5/15/2024, 5:57:36 PM', '', '', 'Unassigned', 'Very Angry.');
-    INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES ('Jim Passerby', '7895415975', '4891', 'North Main Street and East Ave at the Walmart', 'Rider Down, Unconscious', '5/15/2024, 5:58:23 PM', '', '', 'Unassigned', 'Leaving the scene.');
-    INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES ('Frank Volley', '1891789458', '0000', 'Rest Stop 1', 'Need More Water', '5/15/2024, 6:00:01 PM', '', '', 'Unassigned', 'Last Rider Should Pass Soon.');
+    INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES ('Joe Rider', '1234567898', '1234', '123 North 12th Street, Cross Street Wilson', 'Flat Tire', '5/15/2024, 5:57:36 PM', '', '', 'Unassigned', '<System>: Very Angry.|');
+    INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES ('Jim Passerby', '7895415975', '4891', 'North Main Street and East Ave at the Walmart', 'Rider Down, Unconscious', '5/15/2024, 5:58:23 PM', '', '', 'Unassigned', '<System>: Leaving the scene.|');
+    INSERT INTO calls (name, phone, bib, location, complaint, open_time, close_time, unit, status, notes) VALUES ('Frank Volley', '1891789458', '0000', 'Rest Stop 1', 'Need More Water', '5/15/2024, 6:00:01 PM', '', '', 'Unassigned', '<System>: Last Rider Should Pass Soon.|');
     `);
     console.log('Sample Data Loaded Successfully');
   }

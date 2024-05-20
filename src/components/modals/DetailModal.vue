@@ -1,34 +1,36 @@
 <script setup>
 import { ref, computed, inject } from "vue";
-import { onClickOutside } from '@vueuse/core';
+import NotesModal from "./NotesModal.vue";
 
 const props = defineProps({
   isOpen: Boolean,
-  currentCall: Array
+  currentCall: Array,
 });
 
 const emit = defineEmits(["modal-close"]);
-const { displayPhoneFormat, closeCall } = inject('providedFunctions');
-
-const target = ref(null);
-onClickOutside(target, () => emit('modal-close'));
+const { displayPhoneFormat, closeCall } = inject("providedFunctions");
 
 const call = computed(() => props.currentCall[0]);
 
+const isNotesModalOpened = ref(false);
+const currentCallID = ref(0);
+
+const openNotesModal = (callID) => {
+  isNotesModalOpened.value = true;
+  currentCallID.value = callID;
+};
+
+const closeNotesModal = () => {
+  isNotesModalOpened.value = false;
+};
 </script>
 
 <template>
-  <div v-if="props.isOpen" class="modal-mask" ref="target">
-    <div class="modal-container" ref="target">
-
+  <div v-if="props.isOpen" class="modal-mask">
+    <div class="modal-container">
       <div class="modal-header">
-        <div class="header">
-          <h2 class="content">Call Details for Run Number: {{ call.callID }}</h2>
-        </div>
-
-        <div class="btnRight">
-          <button @click="emit('modal-close')" class="close-btn">X</button>
-        </div>
+        <h2 class="header-content">Call Details for Run Number: {{ call.callID }}</h2>
+        <button @click="emit('modal-close')" class="close-btn">X</button>
       </div>
 
       <div class="modal-body">
@@ -41,21 +43,45 @@ const call = computed(() => props.currentCall[0]);
         <div class="content"><span class="heading">Call Closed At: </span>{{ call.close_time }}</div>
         <div class="content"><span class="heading">Unit Assigned: </span>{{ call.unit }}</div>
         <div class="content"><span class="heading">Call Status: </span>{{ call.status }}</div>
-        <div class="content"><span class="heading">Call Notes: </span>{{ call.notes }}</div>
+        <div class="content"><span class="heading">Call Notes: </span>
+          <div v-if="call.notes">
+            <div v-for="(note, index) in call.notes.split('|')" :key="index">
+              {{ note }}
+            </div>
+          </div>
+          <div v-else>
+            No notes available.
+          </div>
+        </div>
+      </div>
+
+      <div class="functions">
+        <button @click="openNotesModal(call.callID)" class="details-button">Add Notes</button>
       </div>
 
       <div class="modal-footer">
-        <button @click="closeCall(call.callID, call.status), emit('modal-close')" class="closeCallBtn" :disabled="call.status == 'Closed'">Close Call</button>
+        <button
+          @click="closeCall(call.callID, call.status); emit('modal-close')"
+          class="close-call-btn"
+          :disabled="call.status === 'Closed'"
+        >
+          Close Call
+        </button>
       </div>
-
     </div>
+
+    <notes-modal
+      :isOpen="isNotesModalOpened"
+      :callID="currentCallID"
+      @notes-modal-close="closeNotesModal"
+    />
   </div>
 </template>
 
 <style scoped>
 .modal-mask {
   position: fixed;
-  z-index: 0;
+  z-index: 999;
   top: 0;
   left: 0;
   width: 100%;
@@ -83,29 +109,21 @@ const call = computed(() => props.currentCall[0]);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   margin-bottom: 20px;
 }
 
-.header {
+.header-content {
   flex: 1;
   text-align: center;
 }
 
-.btnRight {
-  flex: 0;
-  margin-left: auto;
-}
-
 .close-btn {
-  border: 2px solid black;
+  border: 2px solid #f44336;
   background-color: white;
-  color: black;
+  color: #f44336;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  border-color: #f44336;
-  color: #f44336;
 }
 .close-btn:hover {
   background-color: #f44336;
@@ -117,17 +135,35 @@ const call = computed(() => props.currentCall[0]);
   flex-direction: column;
   gap: 10px;
   font-size: 16px;
-  text-align: left; /* Ensuring text within modal body is left-aligned */
 }
 
 .content {
   word-wrap: break-word;
   margin: 5px 0;
-  max-width: 100%; /* Ensuring content doesn't exceed the modal width */
+  max-width: 100%;
 }
 
 .heading {
   font-weight: bold;
+}
+
+.functions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.details-button {
+  border: 2px solid #04aa6d;
+  background-color: white;
+  color: green;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.details-button:hover {
+  background-color: #04aa6d;
+  color: white;
 }
 
 .modal-footer {
@@ -136,27 +172,23 @@ const call = computed(() => props.currentCall[0]);
   margin-top: 20px;
 }
 
-.closeCallBtn {
-  border: 2px solid black;
+.close-call-btn {
+  border: 2px solid #f44336;
   background-color: white;
-  color: black;
+  color: #f44336;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  border-color: #f44336;
-  color: #f44336;
 }
-.closeCallBtn:hover {
+.close-call-btn:hover {
   background-color: #f44336;
   color: white;
 }
-.closeCallBtn:disabled {
+.close-call-btn:disabled {
   border-color: #666;
   color: #666;
 }
-.closeCallBtn:hover:disabled {
-  border-color: #666;
-  color: #666;
+.close-call-btn:disabled:hover {
   background-color: white;
   cursor: default;
 }
@@ -165,15 +197,5 @@ const call = computed(() => props.currentCall[0]);
   .modal-container {
     width: 90%;
   }
-
-  .modal-header {
-    flex-direction: row-reverse; /* Ensuring close button stays on the right */
-  }
-
-  .header {
-    text-align: center;
-    margin-top: 10px;
-  }
 }
-
 </style>
